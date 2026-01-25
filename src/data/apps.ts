@@ -30,11 +30,11 @@ export const apps: App[] = [
   },
   {
     id: 'curtask',
-    name: 'Curtask',
-    tagline: 'Focus on what matters',
-    description: 'Task management reimagined. A minimal, distraction-free app to help you focus on your current task. Desktop, web, and mobile.',
+    name: 'CurTask',
+    tagline: 'Craft Better Papers, Beautifully',
+    description: 'An AI-powered PDF research workspace for researchers and academics. Manage your paper collections with an infinite canvas, automatic metadata extraction, and powerful search.',
     icon: `${base}icons/curtask.png`,
-    platforms: ['macos', 'web', 'ios'],
+    platforms: ['macos', 'windows', 'linux'],
     status: 'coming-soon',
   },
 ];

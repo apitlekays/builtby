@@ -48,18 +48,18 @@ function App() {
       <footer className="border-t border-border">
         <div className="max-w-4xl mx-auto px-6 py-8 text-center text-muted text-sm">
           <p>
-            Made by{' '}
+            Made with <span className="text-red-500">♥</span> by{' '}
             <a
               href="https://drhafizhanif.net"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white hover:text-accent transition-colors"
             >
-              Dr Hafiz Hanif
+              Hafiz Hanif, PhD
             </a>
           </p>
           <p className="mt-2 font-mono text-xs opacity-50">
-            {new Date().getFullYear()} • Kuala Lumpur
+            Muallim, Perak. Malaysia.
           </p>
         </div>
       </footer>

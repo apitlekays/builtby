@@ -12,13 +12,15 @@ export interface App {
   status: 'available' | 'coming-soon';
 }
 
+const base = import.meta.env.BASE_URL;
+
 export const apps: App[] = [
   {
     id: 'sajda',
     name: 'Sajda',
     tagline: 'Islamic Prayer Times for macOS',
     description: 'A beautiful menu bar app for accurate prayer times, Adhan reminders, and daily Islamic content. Features JAKIM integration for Malaysia and global calculation methods.',
-    icon: '/icons/sajda.png',
+    icon: `${base}icons/sajda.png`,
     platforms: ['macos'],
     github: {
       owner: 'apitlekays',
@@ -31,7 +33,7 @@ export const apps: App[] = [
     name: 'Curtask',
     tagline: 'Focus on what matters',
     description: 'Task management reimagined. A minimal, distraction-free app to help you focus on your current task. Desktop, web, and mobile.',
-    icon: '/icons/curtask.png',
+    icon: `${base}icons/curtask.png`,
     platforms: ['macos', 'web', 'ios'],
     status: 'coming-soon',
   },

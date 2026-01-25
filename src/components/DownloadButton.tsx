@@ -6,12 +6,6 @@ interface DownloadButtonProps {
   repo: string;
 }
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-}
-
 function detectArch(): 'arm64' | 'x64' | 'unknown' {
   // Check if running on Apple Silicon
   // navigator.userAgentData is available in modern browsers

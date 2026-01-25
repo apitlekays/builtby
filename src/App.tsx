@@ -28,10 +28,10 @@ function App() {
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-          Apps that solve real problems
+          Small apps. Big impact.
         </h1>
         <p className="text-muted text-lg max-w-2xl mx-auto">
-          Software crafted with care. Open source where possible, always built with the user in mind.
+          Handcrafted utilities for everyday workflows.
         </p>
       </section>
 

@@ -1,10 +1,14 @@
 import { Github, Code2 } from 'lucide-react';
 import { apps } from './data/apps';
 import { AppCard } from './components/AppCard';
+import { LightStreaks } from './components/LightStreaks';
 
 function App() {
   return (
-    <div className="min-h-screen bg-background bg-grid">
+    <div className="min-h-screen bg-background bg-grid relative">
+      {/* Animated light streaks */}
+      <LightStreaks />
+
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">

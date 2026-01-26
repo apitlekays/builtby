@@ -2,6 +2,30 @@ import { useEffect, useRef } from 'react';
 
 const GRID_SIZE = 32; // Matches the bg-grid CSS pattern
 
+// Color schemes for each app
+const COLORS = {
+  sajda: {
+    // Purple/Violet theme
+    trailStart: { r: 124, g: 58, b: 237 },   // violet-600
+    trailEnd: { r: 167, g: 139, b: 250 },    // violet-400
+    head: 'rgba(196, 181, 253, opacity)',     // violet-300
+    headGlow: 'rgba(139, 92, 246, opacity)',  // violet-500
+    glow: ['rgba(139, 92, 246, 0.06)', 'rgba(167, 139, 250, 0.03)', 'rgba(167, 139, 250, 0)'],
+    trailGlow: 'rgba(139, 92, 246, alpha)',   // violet-500
+  },
+  curtask: {
+    // Orange theme (matching curtask-web)
+    trailStart: { r: 234, g: 88, b: 12 },    // orange-600
+    trailEnd: { r: 251, g: 146, b: 60 },     // orange-400
+    head: 'rgba(253, 186, 116, opacity)',     // orange-300
+    headGlow: 'rgba(249, 115, 22, opacity)',  // orange-500
+    glow: ['rgba(249, 115, 22, 0.06)', 'rgba(251, 146, 60, 0.03)', 'rgba(251, 146, 60, 0)'],
+    trailGlow: 'rgba(249, 115, 22, alpha)',   // orange-500
+  },
+};
+
+type AppType = 'sajda' | 'curtask';
+
 interface GridStreak {
   id: number;
   path: { x: number; y: number }[];
@@ -12,6 +36,8 @@ interface GridStreak {
   opacity: number;
   active: boolean;
   tailLength: number;
+  appType: AppType;
+  targetIndex: number;
 }
 
 export function LightStreaks() {
@@ -40,10 +66,31 @@ export function LightStreaks() {
       return Math.round(value / GRID_SIZE) * GRID_SIZE;
     };
 
-    const getTarget = () => ({
-      x: snapToGrid(canvas.width / 2),
-      y: snapToGrid(200),
-    });
+    // Two targets - positioned behind the app cards
+    // Layout: max-w-4xl (896px) centered, with gap-6 (24px), 2-column grid on md+
+    const getTargets = () => {
+      const containerWidth = Math.min(canvas.width, 896);
+      const offsetX = (canvas.width - containerWidth) / 2;
+      const cardWidth = (containerWidth - 24) / 2; // gap-6 = 24px
+      const isMobile = canvas.width < 768;
+
+      // Hero section is ~200px, cards start around y=350-400
+      const cardsY = isMobile ? 450 : 420;
+
+      if (isMobile) {
+        // Mobile: cards are stacked, target center of each
+        return [
+          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY) },           // Sajda (first card)
+          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY + 320) },     // CurTask (second card)
+        ];
+      }
+
+      // Desktop: side by side
+      return [
+        { x: snapToGrid(offsetX + cardWidth / 2 + 24), y: snapToGrid(cardsY) },           // Sajda (left)
+        { x: snapToGrid(offsetX + cardWidth + 24 + cardWidth / 2), y: snapToGrid(cardsY) }, // CurTask (right)
+      ];
+    };
 
     const generateGridPath = (
       startX: number,
@@ -104,8 +151,11 @@ export function LightStreaks() {
       return path;
     };
 
-    const createStreak = (id: number): GridStreak => {
-      const target = getTarget();
+    const createStreak = (id: number, targetIndex: number): GridStreak => {
+      const targets = getTargets();
+      const target = targets[targetIndex];
+      const appType: AppType = targetIndex === 0 ? 'sajda' : 'curtask';
+
       const edge = Math.floor(Math.random() * 4);
       let startX: number, startY: number;
 
@@ -116,7 +166,7 @@ export function LightStreaks() {
           break;
         case 1: // right
           startX = canvas.width + GRID_SIZE;
-          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.6));
+          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7));
           break;
         case 2: // bottom
           startX = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.width - GRID_SIZE * 4));
@@ -125,7 +175,7 @@ export function LightStreaks() {
         case 3: // left
         default:
           startX = -GRID_SIZE;
-          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.6));
+          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7));
           break;
       }
 
@@ -141,11 +191,17 @@ export function LightStreaks() {
         opacity: 0,
         active: false,
         tailLength: 60 + Math.random() * 40,
+        appType,
+        targetIndex,
       };
     };
 
-    const numStreaks = 10;
-    streaksRef.current = Array.from({ length: numStreaks }, (_, i) => createStreak(i));
+    // Create streaks - split between two targets
+    const numStreaksPerTarget = 5;
+    streaksRef.current = [
+      ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i, 0)),
+      ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i + numStreaksPerTarget, 1)),
+    ];
 
     let startTime = Date.now();
 
@@ -187,7 +243,7 @@ export function LightStreaks() {
       const currentTime = Date.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const target = getTarget();
+      const targets = getTargets();
 
       streaksRef.current.forEach((streak, index) => {
         if (!streak.active && currentTime - startTime > streak.delay) {
@@ -196,12 +252,15 @@ export function LightStreaks() {
 
         if (!streak.active) return;
 
+        const target = targets[streak.targetIndex];
+        const colors = COLORS[streak.appType];
+
         const totalLength = getTotalPathLength(streak);
         const currentDistance = streak.progress * totalLength;
         const headPos = getPositionAlongPath(streak, currentDistance);
 
         if (!headPos) {
-          streaksRef.current[index] = createStreak(streak.id);
+          streaksRef.current[index] = createStreak(streak.id, streak.targetIndex);
           streaksRef.current[index].active = true;
           streaksRef.current[index].delay = 0;
           return;
@@ -212,9 +271,9 @@ export function LightStreaks() {
         );
 
         if (distToTarget > 100) {
-          streak.opacity = Math.min(streak.opacity + 0.015, 0.08);
+          streak.opacity = Math.min(streak.opacity + 0.015, 0.1);
         } else {
-          streak.opacity = Math.max((distToTarget / 100) * 0.08, 0);
+          streak.opacity = Math.max((distToTarget / 100) * 0.1, 0);
         }
 
         const tailDistance = Math.max(0, currentDistance - streak.tailLength);
@@ -227,10 +286,10 @@ export function LightStreaks() {
           const trailProgress = (d - tailDistance) / streak.tailLength;
           const alpha = trailProgress * streak.opacity;
 
-          // Indigo gradient: from indigo-600 to indigo-400
-          const r = Math.round(79 + (129 - 79) * trailProgress);
-          const g = Math.round(70 + (140 - 70) * trailProgress);
-          const b = Math.round(229 + (248 - 229) * trailProgress);
+          // Gradient from start to end color
+          const r = Math.round(colors.trailStart.r + (colors.trailEnd.r - colors.trailStart.r) * trailProgress);
+          const g = Math.round(colors.trailStart.g + (colors.trailEnd.g - colors.trailStart.g) * trailProgress);
+          const b = Math.round(colors.trailStart.b + (colors.trailEnd.b - colors.trailStart.b) * trailProgress);
 
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 1.5 + trailProgress * 1, 0, Math.PI * 2);
@@ -240,35 +299,38 @@ export function LightStreaks() {
           // Glow
           ctx.beginPath();
           ctx.arc(pos.x, pos.y, 4 + trailProgress * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(99, 102, 241, ${alpha * 0.15})`;
+          ctx.fillStyle = colors.trailGlow.replace('alpha', String(alpha * 0.15));
           ctx.fill();
         }
 
         // Draw bright head
         ctx.beginPath();
         ctx.arc(headPos.x, headPos.y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(165, 180, 252, ${streak.opacity})`; // indigo-300
+        ctx.fillStyle = colors.head.replace('opacity', String(streak.opacity));
         ctx.fill();
 
         // Head glow
         ctx.beginPath();
         ctx.arc(headPos.x, headPos.y, 6, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(129, 140, 248, ${streak.opacity * 0.08})`; // indigo-400
+        ctx.fillStyle = colors.headGlow.replace('opacity', String(streak.opacity * 0.1));
         ctx.fill();
 
         streak.progress += streak.speed;
       });
 
-      // Draw subtle convergence glow at target
-      const glowGradient = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, 60);
-      glowGradient.addColorStop(0, 'rgba(99, 102, 241, 0.06)');
-      glowGradient.addColorStop(0.5, 'rgba(129, 140, 248, 0.03)');
-      glowGradient.addColorStop(1, 'rgba(129, 140, 248, 0)');
+      // Draw subtle convergence glow at each target
+      targets.forEach((target, i) => {
+        const colors = i === 0 ? COLORS.sajda : COLORS.curtask;
+        const glowGradient = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, 60);
+        glowGradient.addColorStop(0, colors.glow[0]);
+        glowGradient.addColorStop(0.5, colors.glow[1]);
+        glowGradient.addColorStop(1, colors.glow[2]);
 
-      ctx.beginPath();
-      ctx.arc(target.x, target.y, 60, 0, Math.PI * 2);
-      ctx.fillStyle = glowGradient;
-      ctx.fill();
+        ctx.beginPath();
+        ctx.arc(target.x, target.y, 60, 0, Math.PI * 2);
+        ctx.fillStyle = glowGradient;
+        ctx.fill();
+      });
 
       animationRef.current = requestAnimationFrame(animate);
     };

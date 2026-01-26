@@ -4,6 +4,7 @@ import { useGitHubRelease } from '../hooks/useGitHubRelease';
 interface DownloadButtonProps {
   owner: string;
   repo: string;
+  appId?: string;
 }
 
 function getArchFromFilename(filename: string): 'arm64' | 'x64' | 'unknown' {
@@ -21,7 +22,12 @@ function formatBytes(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-export function DownloadButton({ owner, repo }: DownloadButtonProps) {
+export function DownloadButton({ owner, repo, appId }: DownloadButtonProps) {
+  // Color scheme based on app
+  const isSajda = appId === 'sajda';
+  const buttonClass = isSajda
+    ? 'bg-violet-500 hover:bg-violet-600'
+    : 'bg-accent hover:bg-blue-600';
   const { release, loading, error } = useGitHubRelease(owner, repo);
 
   if (loading) {
@@ -79,7 +85,7 @@ export function DownloadButton({ owner, repo }: DownloadButtonProps) {
       {/* Primary Download Button - Apple Silicon */}
       <a
         href={primaryAsset.downloadUrl}
-        className="flex items-center justify-center gap-2 px-4 py-3 bg-accent hover:bg-blue-600 rounded-lg text-white font-medium transition-colors"
+        className={`flex items-center justify-center gap-2 px-4 py-3 ${buttonClass} rounded-lg text-white font-medium transition-colors`}
       >
         <Download className="w-4 h-4" />
         <span>Download for {armAsset ? 'Apple Silicon' : 'macOS'}</span>

@@ -91,14 +91,22 @@ export function AppCard({ app }: AppCardProps) {
 
       {/* Download / Coming Soon */}
       {isAvailable && app.github ? (
-        <DownloadButton owner={app.github.owner} repo={app.github.repo} />
+        <DownloadButton owner={app.github.owner} repo={app.github.repo} appId={app.id} />
       ) : (
-        <button
-          disabled
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg text-muted cursor-not-allowed"
+        <a
+          href={app.id === 'curtask' ? 'https://www.curtask.com/' : '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`
+            w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors
+            ${app.id === 'curtask'
+              ? 'bg-orange-500/20 border border-orange-500/30 text-orange-400 hover:bg-orange-500/30'
+              : 'bg-surface border border-border text-muted'
+            }
+          `}
         >
-          <span>Coming Soon</span>
-        </button>
+          <span>Coming soon – join waitlist</span>
+        </a>
       )}
     </div>
   );

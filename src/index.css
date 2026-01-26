@@ -19,7 +19,12 @@
   background-size: 32px 32px;
 }
 
-/* Gradient glow effect */
+/* Gradient glow effect - blue (default/Sajda) */
 .glow {
   box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+}
+
+/* Orange glow effect - CurTask */
+.glow-orange {
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.2);
 }

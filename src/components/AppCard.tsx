@@ -24,27 +24,39 @@ const platformLabels = {
 
 export function AppCard({ app }: AppCardProps) {
   const isAvailable = app.status === 'available';
+  const isCurTask = app.id === 'curtask';
+
+  // Both Sajda (available) and CurTask (featured coming-soon) get the lit-up effect
+  const isLitUp = isAvailable || isCurTask;
 
   return (
     <div
       className={`
         relative p-6 rounded-xl border transition-all duration-300
-        ${isAvailable
-          ? 'bg-surface border-border hover:border-accent/50 glow'
+        ${isLitUp
+          ? isCurTask
+            ? 'bg-surface border-orange-500/30 hover:border-orange-500/50 glow-orange'
+            : 'bg-surface border-border hover:border-accent/50 glow'
           : 'bg-surface/50 border-border/50 opacity-75'
         }
       `}
     >
       {/* Coming Soon Badge */}
       {!isAvailable && (
-        <div className="absolute top-4 right-4 px-2 py-1 bg-amber-500/20 border border-amber-500/30 rounded text-amber-400 text-xs font-medium">
+        <div className={`absolute top-4 right-4 px-2 py-1 rounded text-xs font-medium ${
+          isCurTask
+            ? 'bg-orange-500/20 border border-orange-500/30 text-orange-400'
+            : 'bg-amber-500/20 border border-amber-500/30 text-amber-400'
+        }`}>
           Coming Soon
         </div>
       )}
 
       {/* App Icon & Info */}
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-xl bg-background border border-border overflow-hidden flex-shrink-0">
+        <div className={`w-16 h-16 rounded-xl bg-background overflow-hidden flex-shrink-0 border ${
+          isCurTask ? 'border-orange-500/30' : 'border-border'
+        }`}>
           {app.icon ? (
             <img
               src={app.icon}
@@ -80,7 +92,11 @@ export function AppCard({ app }: AppCardProps) {
           return (
             <div
               key={platform}
-              className="flex items-center gap-1.5 px-2 py-1 bg-background/50 border border-border/50 rounded text-xs text-muted"
+              className={`flex items-center gap-1.5 px-2 py-1 bg-background/50 rounded text-xs ${
+                isCurTask
+                  ? 'border border-orange-500/20 text-orange-400/70'
+                  : 'border border-border/50 text-muted'
+              }`}
             >
               <Icon className="w-3 h-3" />
               <span>{platformLabels[platform]}</span>

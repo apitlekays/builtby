@@ -31,6 +31,13 @@ function App() {
 
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
+        <div className="mb-8 flex justify-center">
+          <img
+            src="/hero.png"
+            alt="builtby hero"
+            className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl shadow-lg"
+          />
+        </div>
         <h1 className="text-3xl sm:text-4xl font-bold mb-4">
           Small apps. Big impact.
         </h1>

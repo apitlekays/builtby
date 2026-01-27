@@ -113,13 +113,13 @@ export function AppCard({ app }: AppCardProps) {
           {app.id === 'sajda' && (
             <div className="flex justify-center pt-2">
               <a
-                href="https://www.producthunt.com/products/sajda-macos/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-sajda-macos"
+                href="https://www.producthunt.com/products/sajda-macos?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-sajda-macos"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <img
-                  src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1154400&theme=dark"
-                  alt="Sajda (macOS) - An Islamic prayer times macOS menubar app for Muslims! | Product Hunt"
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1068663&theme=dark&t=1769501895059"
+                  alt="Sajda (macOS) - An Islamic prayer times macos menubar app for Muslims! | Product Hunt"
                   width="250"
                   height="54"
                   className="hover:opacity-80 transition-opacity"

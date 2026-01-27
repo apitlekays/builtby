@@ -107,7 +107,27 @@ export function AppCard({ app }: AppCardProps) {
 
       {/* Download / Coming Soon */}
       {isAvailable && app.github ? (
-        <DownloadButton owner={app.github.owner} repo={app.github.repo} appId={app.id} />
+        <div className="space-y-3">
+          <DownloadButton owner={app.github.owner} repo={app.github.repo} appId={app.id} />
+          {/* Product Hunt badge for Sajda */}
+          {app.id === 'sajda' && (
+            <div className="flex justify-center pt-2">
+              <a
+                href="https://www.producthunt.com/products/sajda-macos/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-sajda-macos"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1154400&theme=dark"
+                  alt="Sajda (macOS) - An Islamic prayer times macOS menubar app for Muslims! | Product Hunt"
+                  width="250"
+                  height="54"
+                  className="hover:opacity-80 transition-opacity"
+                />
+              </a>
+            </div>
+          )}
+        </div>
       ) : (
         <a
           href={app.id === 'curtask' ? 'https://www.curtask.com/' : '#'}

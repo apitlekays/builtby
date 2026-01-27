@@ -54,10 +54,13 @@ export function LightStreaks() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let needsStreakRegen = false;
+
     const resizeCanvas = () => {
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
+      needsStreakRegen = true;
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -67,28 +70,40 @@ export function LightStreaks() {
     };
 
     // Two targets - positioned behind the app cards
-    // Layout: max-w-4xl (896px) centered, with gap-6 (24px), 2-column grid on md+
+    // Layout: max-w-5xl (1024px) centered, with gap-6 (24px), 2-column grid on md+
+    // Hero is min-h-[85vh], apps section has py-20 (80px) + header text (~150px)
     const getTargets = () => {
-      const containerWidth = Math.min(canvas.width, 896);
+      const maxWidth = 1024; // max-w-5xl
+      const containerWidth = Math.min(canvas.width - 48, maxWidth); // px-6 = 24px each side
       const offsetX = (canvas.width - containerWidth) / 2;
       const cardWidth = (containerWidth - 24) / 2; // gap-6 = 24px
       const isMobile = canvas.width < 768;
 
-      // Hero section is ~200px, cards start around y=350-400
-      const cardsY = isMobile ? 450 : 420;
+      // Hero is 85vh, plus header for apps section (py-20 + title area ~150px) + card height/2
+      const heroHeight = canvas.height * 0.85;
+      const appsHeaderHeight = 80 + 150; // py-20 top + title section
+      const cardHeight = 280; // approximate card height
+
+      // Y position targets the center of the cards
+      const cardsY = heroHeight + appsHeaderHeight + cardHeight / 2;
 
       if (isMobile) {
-        // Mobile: cards are stacked, target center of each
+        // Mobile: cards are stacked vertically, target center of each
+        const mobileCardHeight = 320;
+        const gap = 24; // gap-6
         return [
-          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY) },           // Sajda (first card)
-          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY + 320) },     // CurTask (second card)
+          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY) },                              // Sajda (first card)
+          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY + mobileCardHeight + gap) },     // CurTask (second card)
         ];
       }
 
-      // Desktop: side by side
+      // Desktop: side by side, centered in their respective columns
+      const leftCardCenterX = offsetX + cardWidth / 2;
+      const rightCardCenterX = offsetX + cardWidth + 24 + cardWidth / 2;
+
       return [
-        { x: snapToGrid(offsetX + cardWidth / 2 + 24), y: snapToGrid(cardsY) },           // Sajda (left)
-        { x: snapToGrid(offsetX + cardWidth + 24 + cardWidth / 2), y: snapToGrid(cardsY) }, // CurTask (right)
+        { x: snapToGrid(leftCardCenterX), y: snapToGrid(cardsY) },    // Sajda (left)
+        { x: snapToGrid(rightCardCenterX), y: snapToGrid(cardsY) },   // CurTask (right)
       ];
     };
 
@@ -242,6 +257,16 @@ export function LightStreaks() {
     const animate = () => {
       const currentTime = Date.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Regenerate streaks if window was resized
+      if (needsStreakRegen) {
+        needsStreakRegen = false;
+        streaksRef.current = [
+          ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i, 0)),
+          ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i + numStreaksPerTarget, 1)),
+        ];
+        startTime = Date.now();
+      }
 
       const targets = getTargets();
 

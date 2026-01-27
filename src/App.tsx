@@ -2,6 +2,7 @@ import { Github, Code2 } from 'lucide-react';
 import { apps } from './data/apps';
 import { AppCard } from './components/AppCard';
 import { LightStreaks } from './components/LightStreaks';
+import { SajdaFeatures } from './components/SajdaFeatures';
 
 function App() {
   return (
@@ -47,13 +48,18 @@ function App() {
       </section>
 
       {/* Apps Grid */}
-      <main className="max-w-4xl mx-auto px-6 pb-20">
+      <main className="max-w-4xl mx-auto px-6 pb-12">
         <div className="grid gap-6 md:grid-cols-2">
           {apps.map((app) => (
             <AppCard key={app.id} app={app} />
           ))}
         </div>
       </main>
+
+      {/* Sajda Features Showcase */}
+      <div className="border-t border-border">
+        <SajdaFeatures />
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-border">

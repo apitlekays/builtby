@@ -24,7 +24,7 @@ export function HeroSection() {
             {/* Glow ring */}
             <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-orange-500/20 rounded-3xl blur-xl opacity-75" />
             <img
-              src="/hero.png"
+              src="/drHafiz.jpg"
               alt="Dr. Hafiz Hanif"
               className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl shadow-2xl ring-1 ring-white/10"
             />

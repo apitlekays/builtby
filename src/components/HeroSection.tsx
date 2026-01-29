@@ -54,7 +54,7 @@ export function HeroSection() {
           style={{ animationDelay: '400ms' }}
         >
           Educational technology researcher turned indie developer.
-          Crafting native macOS apps and web tools that solve real problems.
+          Crafting native desktop apps for macOS and Windows that solve real problems.
         </p>
 
         {/* Stats */}

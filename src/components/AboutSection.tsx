@@ -39,7 +39,7 @@ const expertise = [
   'Digital Learning',
   'Learning Analytics',
   'React & TypeScript',
-  'Swift & macOS',
+  'Rust & Tauri',
 ];
 
 export function AboutSection() {

@@ -58,7 +58,7 @@ function App() {
             Apps that <span className="gradient-text">solve problems</span>
           </h2>
           <p className="text-muted max-w-2xl mx-auto">
-            Native macOS applications and web tools crafted with care and attention to detail.
+            Native desktop applications for macOS and Windows, crafted with care and attention to detail.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -88,7 +88,7 @@ function App() {
                 builtby<span className="text-violet-500">.</span>
               </p>
               <p className="text-muted text-sm max-w-xs">
-                Crafting software that empowers educators and learners worldwide.
+                Crafting desktop apps for macOS and Windows that empower educators and learners worldwide.
               </p>
             </div>
 

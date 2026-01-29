@@ -62,9 +62,9 @@ export function DownloadButton({ owner, repo, appId }: DownloadButtonProps) {
   // Get macOS .dmg assets
   const dmgAssets = release.assets.filter((a) => a.name.endsWith('.dmg'));
 
-  // Get Windows .exe assets (setup installer)
+  // Get Windows .exe assets (setup installer or any .exe)
   const windowsAsset = release.assets.find((a) =>
-    a.name.endsWith('.exe') && a.name.includes('setup')
+    a.name.endsWith('.exe') || a.name.endsWith('.msi')
   );
 
   // Find Apple Silicon and Intel versions

@@ -18,10 +18,10 @@ export const apps: App[] = [
   {
     id: 'sajda',
     name: 'Sajda',
-    tagline: 'Islamic Prayer Times for macOS',
+    tagline: 'Islamic Prayer Times for macOS & Windows',
     description: 'A beautiful menu bar app for accurate prayer times, Adhan reminders, and daily Islamic content. Features JAKIM integration for Malaysia and global calculation methods.',
     icon: `${base}icons/sajda.png`,
-    platforms: ['macos'],
+    platforms: ['macos', 'windows'],
     github: {
       owner: 'apitlekays',
       repo: 'Sajda',

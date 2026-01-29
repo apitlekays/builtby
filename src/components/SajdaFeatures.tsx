@@ -53,7 +53,7 @@ export function SajdaFeatures() {
         </h2>
         <p className="text-muted text-lg max-w-2xl mx-auto">
           A beautifully crafted menu bar app that keeps you connected to your prayers.
-          Designed for macOS with native performance and elegant simplicity.
+          Now available for both macOS and Windows with native performance and elegant simplicity.
         </p>
       </div>
 
@@ -102,16 +102,26 @@ export function SajdaFeatures() {
         <div className="inline-block p-8 rounded-2xl bg-gradient-to-b from-violet-500/10 to-transparent border border-violet-500/20">
           <h3 className="text-xl font-semibold mb-2">Ready to enhance your prayer routine?</h3>
           <p className="text-muted mb-6">Download Sajda for free and experience the difference.</p>
-          <a
-            href="https://github.com/apitlekays/Sajda/releases/latest"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-500 hover:bg-violet-600 rounded-lg text-white font-medium transition-colors"
-          >
-            Download for macOS
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="https://github.com/apitlekays/Sajda/releases/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-500 hover:bg-violet-600 rounded-lg text-white font-medium transition-colors"
+            >
+              Download for macOS
+            </a>
+            <a
+              href="https://github.com/apitlekays/Sajda/releases/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent border border-violet-500/30 text-violet-400 hover:bg-violet-500/10 rounded-lg font-medium transition-colors"
+            >
+              Download for Windows
+            </a>
+          </div>
           <p className="mt-4 text-xs text-muted">
-            Requires macOS 13.0 or later • Apple Silicon & Intel supported
+            macOS 13.0+ (Apple Silicon & Intel) • Windows 10/11 (64-bit)
           </p>
         </div>
       </div>

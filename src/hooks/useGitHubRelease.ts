@@ -77,7 +77,9 @@ export function useGitHubRelease(owner: string, repo: string): UseGitHubReleaseR
             .filter((asset: { name: string }) =>
               asset.name.endsWith('.dmg') ||
               asset.name.endsWith('.app.tar.gz') ||
-              asset.name.endsWith('.zip')
+              asset.name.endsWith('.zip') ||
+              asset.name.endsWith('.exe') ||
+              asset.name.endsWith('.msi')
             )
             .map((asset: { name: string; browser_download_url: string; size: number }) => ({
               name: asset.name,

@@ -10,6 +10,8 @@ export interface App {
     repo: string;
   };
   status: 'available' | 'coming-soon';
+  features?: string[];
+  launchDate?: Date;
 }
 
 const base = import.meta.env.BASE_URL;
@@ -36,5 +38,12 @@ export const apps: App[] = [
     icon: `${base}icons/curtask.png`,
     platforms: ['macos', 'windows', 'linux'],
     status: 'coming-soon',
+    features: [
+      'Infinite canvas for visual paper organization',
+      'AI-powered metadata extraction with Ollama',
+      'Full-text search with FTS5',
+      'Multi-window architecture',
+    ],
+    launchDate: new Date('2026-04-30T00:00:00'),
   },
 ];

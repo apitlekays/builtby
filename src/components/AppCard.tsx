@@ -1,6 +1,7 @@
-import { Apple, Globe, Monitor } from 'lucide-react';
+import { Apple, Globe, Monitor, Sparkles } from 'lucide-react';
 import type { App } from '../data/apps';
 import { DownloadButton } from './DownloadButton';
+import { FlipClockCountdown } from './FlipClockCountdown';
 
 interface AppCardProps {
   app: App;
@@ -105,6 +106,24 @@ export function AppCard({ app }: AppCardProps) {
         })}
       </div>
 
+      {/* Features List (for CurTask) */}
+      {app.features && app.features.length > 0 && (
+        <div className="mb-5 p-3 rounded-lg bg-background/50 border border-orange-500/10">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+            <span className="text-xs font-medium text-orange-400">Key Features</span>
+          </div>
+          <ul className="space-y-1.5">
+            {app.features.map((feature, index) => (
+              <li key={index} className="flex items-start gap-2 text-xs text-gray-400">
+                <span className="text-orange-500/60 mt-0.5">•</span>
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Download / Coming Soon */}
       {isAvailable && app.github ? (
         <div className="space-y-3">
@@ -129,20 +148,28 @@ export function AppCard({ app }: AppCardProps) {
           )}
         </div>
       ) : (
-        <a
-          href={app.id === 'curtask' ? 'https://www.curtask.com/' : '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`
-            w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors
-            ${app.id === 'curtask'
-              ? 'bg-orange-500/20 border border-orange-500/30 text-orange-400 hover:bg-orange-500/30'
-              : 'bg-surface border border-border text-muted'
-            }
-          `}
-        >
-          <span>Coming soon – join waitlist</span>
-        </a>
+        <div className="space-y-4">
+          {/* Countdown Timer */}
+          {app.launchDate && (
+            <FlipClockCountdown targetDate={app.launchDate} />
+          )}
+
+          {/* Join Waitlist Button */}
+          <a
+            href={app.id === 'curtask' ? 'https://www.curtask.com/' : '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`
+              w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors
+              ${app.id === 'curtask'
+                ? 'bg-orange-500/20 border border-orange-500/30 text-orange-400 hover:bg-orange-500/30'
+                : 'bg-surface border border-border text-muted'
+              }
+            `}
+          >
+            <span>Join Waitlist</span>
+          </a>
+        </div>
       )}
     </div>
   );

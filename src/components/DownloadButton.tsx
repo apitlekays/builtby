@@ -112,26 +112,25 @@ export function DownloadButton({ owner, repo, appId }: DownloadButtonProps) {
         </a>
       )}
 
-      {/* Version info and Intel link */}
-      <div className="flex flex-col items-center gap-1 text-xs text-muted">
-        <div className="flex items-center gap-2">
-          <span className="font-mono">{release.version}</span>
-          {primaryMacAsset && (
-            <>
-              <span>•</span>
-              <span>{formatBytes(primaryMacAsset.size)}</span>
-            </>
-          )}
-        </div>
+      {/* Intel Mac Download Button (if both versions exist) */}
+      {armAsset && intelAsset && (
+        <a
+          href={intelAsset.downloadUrl}
+          className={`flex items-center justify-center gap-2 px-4 py-2.5 bg-transparent border ${secondaryButtonClass} rounded-lg font-medium transition-colors`}
+        >
+          <Apple className="w-4 h-4" />
+          <span>Download for Intel Mac</span>
+        </a>
+      )}
 
-        {/* Intel download link (if both versions exist) */}
-        {armAsset && intelAsset && (
-          <a
-            href={intelAsset.downloadUrl}
-            className="hover:text-white transition-colors underline underline-offset-2"
-          >
-            Download for Intel Mac
-          </a>
+      {/* Version info */}
+      <div className="flex items-center justify-center gap-2 text-xs text-muted">
+        <span className="font-mono">{release.version}</span>
+        {primaryMacAsset && (
+          <>
+            <span>•</span>
+            <span>{formatBytes(primaryMacAsset.size)}</span>
+          </>
         )}
       </div>
     </div>

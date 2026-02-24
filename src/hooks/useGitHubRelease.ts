@@ -27,6 +27,18 @@ interface CachedData {
   timestamp: number;
 }
 
+const ASSET_EXTENSIONS = ['.dmg', '.app.tar.gz', '.zip', '.exe', '.msi'];
+
+function parseReleaseAssets(assets: { name: string; browser_download_url: string; size: number }[]): ReleaseAsset[] {
+  return assets
+    .filter((a) => ASSET_EXTENSIONS.some((ext) => a.name.endsWith(ext)))
+    .map((a) => ({
+      name: a.name,
+      downloadUrl: a.browser_download_url,
+      size: a.size,
+    }));
+}
+
 export function useGitHubRelease(owner: string, repo: string): UseGitHubReleaseResult {
   const [release, setRelease] = useState<Release | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +47,7 @@ export function useGitHubRelease(owner: string, repo: string): UseGitHubReleaseR
   useEffect(() => {
     const cacheKey = `${CACHE_KEY_PREFIX}${owner}_${repo}`;
 
-    // Check cache first
+    // Check localStorage cache first
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       try {
@@ -50,50 +62,46 @@ export function useGitHubRelease(owner: string, repo: string): UseGitHubReleaseR
       }
     }
 
-    // Fetch from GitHub API
     const fetchRelease = async () => {
+      // Try build-time static JSON first (avoids API rate limits)
+      try {
+        const staticRes = await fetch(`${import.meta.env.BASE_URL}github-releases.json`);
+        if (staticRes.ok) {
+          const staticData = await staticRes.json();
+          const key = `${owner}/${repo}`;
+          if (staticData[key]) {
+            const releaseData: Release = staticData[key];
+            localStorage.setItem(cacheKey, JSON.stringify({ release: releaseData, timestamp: Date.now() }));
+            setRelease(releaseData);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // Static JSON unavailable, fall through to live API
+      }
+
+      // Fall back to live GitHub API
       try {
         const response = await fetch(
           `https://api.github.com/repos/${owner}/${repo}/releases/latest`
         );
 
         if (!response.ok) {
-          if (response.status === 404) {
-            setError('No releases found');
-          } else {
-            setError('Failed to fetch release');
-          }
+          setError(response.status === 404 ? 'No releases found' : 'Failed to fetch release');
           setLoading(false);
           return;
         }
 
         const data = await response.json();
-
         const releaseData: Release = {
           version: data.tag_name,
           publishedAt: data.published_at,
           htmlUrl: data.html_url,
-          assets: data.assets
-            .filter((asset: { name: string }) =>
-              asset.name.endsWith('.dmg') ||
-              asset.name.endsWith('.app.tar.gz') ||
-              asset.name.endsWith('.zip') ||
-              asset.name.endsWith('.exe') ||
-              asset.name.endsWith('.msi')
-            )
-            .map((asset: { name: string; browser_download_url: string; size: number }) => ({
-              name: asset.name,
-              downloadUrl: asset.browser_download_url,
-              size: asset.size,
-            })),
+          assets: parseReleaseAssets(data.assets),
         };
 
-        // Cache the result
-        localStorage.setItem(cacheKey, JSON.stringify({
-          release: releaseData,
-          timestamp: Date.now(),
-        }));
-
+        localStorage.setItem(cacheKey, JSON.stringify({ release: releaseData, timestamp: Date.now() }));
         setRelease(releaseData);
         setError(null);
       } catch {

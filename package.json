@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "fetch-releases": "node scripts/fetch-releases.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

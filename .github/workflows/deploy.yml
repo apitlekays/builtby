@@ -35,6 +35,11 @@ jobs:
             | node -e "const d=require('fs');process.stdin.on('data',c=>{const j=JSON.parse(c);d.writeFileSync('public/docker-stats.json',JSON.stringify({['dochafizhanif/meteor-mcp']:{pulls:j.pull_count,stars:j.star_count}}))})" \
             || echo '{}' > public/docker-stats.json
 
+      - name: Fetch GitHub release data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-releases.js || echo '{}' > public/github-releases.json
+
       - name: Build
         run: npm run build
 

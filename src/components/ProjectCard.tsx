@@ -1,0 +1,93 @@
+import { ExternalLink, GitFork, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { Project } from '../data/projects';
+
+interface ProjectCardProps {
+  project: Project;
+}
+
+interface RepoStats {
+  stars: number;
+  forks: number;
+}
+
+const languageColors: Record<string, string> = {
+  TypeScript: '#3178c6',
+  Python: '#3572A5',
+  JavaScript: '#f1e05a',
+  Rust: '#dea584',
+  Go: '#00ADD8',
+};
+
+export function ProjectCard({ project }: ProjectCardProps) {
+  const [stats, setStats] = useState<RepoStats | null>(null);
+  const repoUrl = `https://github.com/${project.github.owner}/${project.github.repo}`;
+
+  useEffect(() => {
+    const cacheKey = `gh-stats-${project.github.owner}-${project.github.repo}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < 5 * 60 * 1000) {
+        setStats(data);
+        return;
+      }
+    }
+
+    fetch(`https://api.github.com/repos/${project.github.owner}/${project.github.repo}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const repoStats = { stars: data.stargazers_count, forks: data.forks_count };
+        setStats(repoStats);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: repoStats, timestamp: Date.now() }));
+      })
+      .catch(() => {});
+  }, [project.github.owner, project.github.repo]);
+
+  const langColor = languageColors[project.language] ?? '#6b6b6b';
+
+  return (
+    <a
+      href={repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative p-6 rounded-xl border bg-surface border-border hover:border-accent/50 transition-all duration-300 glow-subtle"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between mb-3">
+        <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition-colors">
+          {project.name}
+        </h3>
+        <ExternalLink className="w-4 h-4 text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-1" />
+      </div>
+
+      {/* Description */}
+      <p className="text-gray-400 text-sm leading-relaxed mb-5">
+        {project.description}
+      </p>
+
+      {/* Footer: Language, Stars, Forks, License */}
+      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: langColor }} />
+          {project.language}
+        </span>
+        {stats && (
+          <>
+            <span className="flex items-center gap-1">
+              <Star className="w-3.5 h-3.5" />
+              {stats.stars}
+            </span>
+            <span className="flex items-center gap-1">
+              <GitFork className="w-3.5 h-3.5" />
+              {stats.forks}
+            </span>
+          </>
+        )}
+        {project.license && (
+          <span className="ml-auto text-muted">{project.license}</span>
+        )}
+      </div>
+    </a>
+  );
+}

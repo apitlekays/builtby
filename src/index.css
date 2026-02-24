@@ -47,6 +47,14 @@
   box-shadow: 0 0 60px rgba(249, 115, 22, 0.2);
 }
 
+.glow-subtle {
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-subtle:hover {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.1);
+}
+
 /* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);

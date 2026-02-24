@@ -1,4 +1,5 @@
-import { Apple, Globe, Monitor, Sparkles } from 'lucide-react';
+import { Apple, Globe, Monitor, Sparkles, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { App } from '../data/apps';
 import { DownloadButton } from './DownloadButton';
 import { FlipClockCountdown } from './FlipClockCountdown';
@@ -145,6 +146,16 @@ export function AppCard({ app }: AppCardProps) {
                 />
               </a>
             </div>
+          )}
+          {/* Read More link */}
+          {app.id === 'sajda' && (
+            <Link
+              to="/sajda"
+              className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-violet-400 transition-colors pt-1"
+            >
+              <span>Read more</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           )}
         </div>
       ) : (

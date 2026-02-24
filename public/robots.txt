@@ -5,6 +5,3 @@ Allow: /
 
 # Sitemap
 Sitemap: https://builtby.drhafizhanif.net/sitemap.xml
-
-# Crawl-delay for respectful crawling
-Crawl-delay: 1

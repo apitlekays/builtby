@@ -4,16 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RD95BW7DRC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RD95BW7DRC');
+    </script>
+
     <!-- Primary Meta Tags -->
     <title>Apps Built By Hafiz Hanif, PhD</title>
     <meta name="title" content="Apps Built By Hafiz Hanif, PhD" />
-    <meta name="description" content="Download Sajda - Islamic prayer times app for macOS with JAKIM integration, Adhan reminders & Hijri calendar. Plus CurTask - AI-powered PDF research workspace. Software crafted with care by Hafiz Hanif, PhD." />
+    <meta name="description" content="Download Sajda - Islamic prayer times app for macOS & Windows with JAKIM integration, Adhan reminders & Hijri calendar. Plus CurTask - AI-powered PDF research workspace. Software crafted with care by Hafiz Hanif, PhD." />
     <meta name="author" content="Hafiz Hanif, PhD" />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
-
-    <!-- Keywords for target audiences -->
-    <meta name="keywords" content="Islamic prayer times app, macOS Muslim app, waktu solat Malaysia, JAKIM prayer times, Adhan reminder Mac, Hijri calendar app, Muslim developer tools, Islamic software, prayer tracker, Apple Silicon app, PDF research tool, academic paper manager, Malaysian Muslim app, solat reminder, azan Mac, Islamic productivity" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://builtby.drhafizhanif.net" />
@@ -95,7 +101,7 @@
           "name": "Sajda",
           "description": "A beautiful menu bar app for accurate Islamic prayer times, Adhan reminders, and daily Islamic content. Features JAKIM integration for Malaysia and global calculation methods.",
           "applicationCategory": "LifestyleApplication",
-          "operatingSystem": "macOS",
+          "operatingSystem": "macOS, Windows",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -104,7 +110,7 @@
           "author": {
             "@id": "https://builtby.drhafizhanif.net/#person"
           },
-          "softwareVersion": "0.0.4",
+          "softwareVersion": "0.1.2",
           "downloadUrl": "https://github.com/apitlekays/Sajda/releases",
           "screenshot": "https://builtby.drhafizhanif.net/og-image.png",
           "featureList": [
@@ -154,6 +160,11 @@
     </script>
   </head>
   <body>
+    <noscript>
+      <h1>builtby /drhafizhanif</h1>
+      <p>Apps built by Hafiz Hanif, PhD — Sajda (Islamic Prayer Times for macOS & Windows) and CurTask (AI-powered PDF Research Workspace).</p>
+      <p>Please enable JavaScript to use this site.</p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

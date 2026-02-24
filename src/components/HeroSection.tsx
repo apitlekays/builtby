@@ -20,7 +20,7 @@ export function HeroSection() {
 
         {/* Profile Image */}
         <div className="mb-10 flex justify-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-          <div className="relative">
+          <div className="relative" data-streak-target="profile">
             {/* Glow ring */}
             <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-orange-500/20 rounded-3xl blur-xl opacity-75" />
             <img

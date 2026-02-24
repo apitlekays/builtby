@@ -33,6 +33,7 @@ export function AppCard({ app }: AppCardProps) {
 
   return (
     <div
+      data-streak-target={`app-${app.id}`}
       className={`
         relative p-6 rounded-xl border transition-all duration-300
         ${isLitUp

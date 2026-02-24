@@ -1,42 +1,60 @@
 import { useEffect, useRef } from 'react';
 
-const GRID_SIZE = 32; // Matches the bg-grid CSS pattern
+const GRID_SIZE = 32;
+const TOTAL_STREAKS = 20;
 
-// Color schemes for each app
-const COLORS = {
-  sajda: {
-    // Purple/Violet theme
-    trailStart: { r: 124, g: 58, b: 237 },   // violet-600
-    trailEnd: { r: 167, g: 139, b: 250 },    // violet-400
-    head: 'rgba(196, 181, 253, opacity)',     // violet-300
-    headGlow: 'rgba(139, 92, 246, opacity)',  // violet-500
+type ColorKey = 'violet' | 'orange' | 'cyan';
+
+const COLORS: Record<ColorKey, {
+  trailStart: { r: number; g: number; b: number };
+  trailEnd: { r: number; g: number; b: number };
+  head: string;
+  headGlow: string;
+  glow: string[];
+  trailGlow: string;
+}> = {
+  violet: {
+    trailStart: { r: 124, g: 58, b: 237 },
+    trailEnd: { r: 167, g: 139, b: 250 },
+    head: 'rgba(196, 181, 253, opacity)',
+    headGlow: 'rgba(139, 92, 246, opacity)',
     glow: ['rgba(139, 92, 246, 0.06)', 'rgba(167, 139, 250, 0.03)', 'rgba(167, 139, 250, 0)'],
-    trailGlow: 'rgba(139, 92, 246, alpha)',   // violet-500
+    trailGlow: 'rgba(139, 92, 246, alpha)',
   },
-  curtask: {
-    // Orange theme (matching curtask-web)
-    trailStart: { r: 234, g: 88, b: 12 },    // orange-600
-    trailEnd: { r: 251, g: 146, b: 60 },     // orange-400
-    head: 'rgba(253, 186, 116, opacity)',     // orange-300
-    headGlow: 'rgba(249, 115, 22, opacity)',  // orange-500
+  orange: {
+    trailStart: { r: 234, g: 88, b: 12 },
+    trailEnd: { r: 251, g: 146, b: 60 },
+    head: 'rgba(253, 186, 116, opacity)',
+    headGlow: 'rgba(249, 115, 22, opacity)',
     glow: ['rgba(249, 115, 22, 0.06)', 'rgba(251, 146, 60, 0.03)', 'rgba(251, 146, 60, 0)'],
-    trailGlow: 'rgba(249, 115, 22, alpha)',   // orange-500
+    trailGlow: 'rgba(249, 115, 22, alpha)',
+  },
+  cyan: {
+    trailStart: { r: 6, g: 182, b: 212 },
+    trailEnd: { r: 103, g: 232, b: 249 },
+    head: 'rgba(165, 243, 252, opacity)',
+    headGlow: 'rgba(6, 182, 212, opacity)',
+    glow: ['rgba(6, 182, 212, 0.06)', 'rgba(103, 232, 249, 0.03)', 'rgba(103, 232, 249, 0)'],
+    trailGlow: 'rgba(6, 182, 212, alpha)',
   },
 };
 
-type AppType = 'sajda' | 'curtask';
+interface Target {
+  x: number;
+  y: number;
+  colorKey: ColorKey;
+}
 
 interface GridStreak {
   id: number;
   path: { x: number; y: number }[];
-  currentSegment: number;
   progress: number;
   speed: number;
   delay: number;
   opacity: number;
   active: boolean;
   tailLength: number;
-  appType: AppType;
+  colorKey: ColorKey;
   targetIndex: number;
 }
 
@@ -54,307 +72,198 @@ export function LightStreaks() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let needsStreakRegen = false;
+    let targetsCache: Target[] = [];
+    let startTime = Date.now();
 
-    const resizeCanvas = () => {
-      const rect = container.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      needsStreakRegen = true;
-    };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    const snap = (v: number) => Math.round(v / GRID_SIZE) * GRID_SIZE;
 
-    const snapToGrid = (value: number): number => {
-      return Math.round(value / GRID_SIZE) * GRID_SIZE;
-    };
-
-    // Two targets - positioned behind the app cards
-    // Layout: max-w-5xl (1024px) centered, with gap-6 (24px), 2-column grid on md+
-    // Hero is min-h-[85vh], apps section has py-20 (80px) + header text (~150px)
-    const getTargets = () => {
-      const maxWidth = 1024; // max-w-5xl
-      const containerWidth = Math.min(canvas.width - 48, maxWidth); // px-6 = 24px each side
-      const offsetX = (canvas.width - containerWidth) / 2;
-      const cardWidth = (containerWidth - 24) / 2; // gap-6 = 24px
-      const isMobile = canvas.width < 768;
-
-      // Hero is 85vh, plus header for apps section (py-20 + title area ~150px) + card height/2
-      const heroHeight = canvas.height * 0.85;
-      const appsHeaderHeight = 80 + 150; // py-20 top + title section
-      const cardHeight = 280; // approximate card height
-
-      // Y position targets the center of the cards
-      const cardsY = heroHeight + appsHeaderHeight + cardHeight / 2;
-
-      if (isMobile) {
-        // Mobile: cards are stacked vertically, target center of each
-        const mobileCardHeight = 320;
-        const gap = 24; // gap-6
-        return [
-          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY) },                              // Sajda (first card)
-          { x: snapToGrid(canvas.width / 2), y: snapToGrid(cardsY + mobileCardHeight + gap) },     // CurTask (second card)
-        ];
-      }
-
-      // Desktop: side by side, centered in their respective columns
-      const leftCardCenterX = offsetX + cardWidth / 2;
-      const rightCardCenterX = offsetX + cardWidth + 24 + cardWidth / 2;
-
-      return [
-        { x: snapToGrid(leftCardCenterX), y: snapToGrid(cardsY) },    // Sajda (left)
-        { x: snapToGrid(rightCardCenterX), y: snapToGrid(cardsY) },   // CurTask (right)
-      ];
+    // Read actual DOM positions — works regardless of scroll position because
+    // both element rect and container rect are viewport-relative, so scroll cancels out.
+    const measureTargets = (): Target[] => {
+      const cr = container.getBoundingClientRect();
+      const targets: Target[] = [];
+      document.querySelectorAll<HTMLElement>('[data-streak-target]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const x = snap(r.left + r.width / 2 - cr.left);
+        const y = snap(r.top + r.height / 2 - cr.top);
+        const id = el.dataset.streakTarget ?? '';
+        const colorKey: ColorKey =
+          id === 'app-curtask' ? 'orange' :
+          id.startsWith('project-') ? 'cyan' :
+          'violet';
+        targets.push({ x, y, colorKey });
+      });
+      return targets;
     };
 
-    const generateGridPath = (
-      startX: number,
-      startY: number,
-      targetX: number,
-      targetY: number
-    ): { x: number; y: number }[] => {
+    const generatePath = (sx: number, sy: number, tx: number, ty: number) => {
       const path: { x: number; y: number }[] = [];
-
-      let currentX = snapToGrid(startX);
-      let currentY = snapToGrid(startY);
-
-      path.push({ x: currentX, y: currentY });
-
-      const horizontalFirst = Math.random() > 0.5;
-      const numWaypoints = 1 + Math.floor(Math.random() * 2);
-
-      for (let i = 0; i < numWaypoints; i++) {
-        const progressX = (i + 1) / (numWaypoints + 1);
-        const progressY = (i + 1) / (numWaypoints + 1);
-
-        const waypointX = snapToGrid(
-          currentX + (targetX - currentX) * progressX + (Math.random() - 0.5) * GRID_SIZE * 4
-        );
-        const waypointY = snapToGrid(
-          currentY + (targetY - currentY) * progressY + (Math.random() - 0.5) * GRID_SIZE * 3
-        );
-
-        if (horizontalFirst) {
-          if (waypointX !== currentX) {
-            path.push({ x: waypointX, y: currentY });
-            currentX = waypointX;
-          }
-          if (waypointY !== currentY) {
-            path.push({ x: currentX, y: waypointY });
-            currentY = waypointY;
-          }
+      let cx = snap(sx), cy = snap(sy);
+      path.push({ x: cx, y: cy });
+      const hFirst = Math.random() > 0.5;
+      const nWp = 1 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < nWp; i++) {
+        const p = (i + 1) / (nWp + 1);
+        const wx = snap(cx + (tx - cx) * p + (Math.random() - 0.5) * GRID_SIZE * 4);
+        const wy = snap(cy + (ty - cy) * p + (Math.random() - 0.5) * GRID_SIZE * 3);
+        if (hFirst) {
+          if (wx !== cx) { path.push({ x: wx, y: cy }); cx = wx; }
+          if (wy !== cy) { path.push({ x: cx, y: wy }); cy = wy; }
         } else {
-          if (waypointY !== currentY) {
-            path.push({ x: currentX, y: waypointY });
-            currentY = waypointY;
-          }
-          if (waypointX !== currentX) {
-            path.push({ x: waypointX, y: currentY });
-            currentX = waypointX;
-          }
+          if (wy !== cy) { path.push({ x: cx, y: wy }); cy = wy; }
+          if (wx !== cx) { path.push({ x: wx, y: cy }); cx = wx; }
         }
       }
-
-      if (targetX !== currentX) {
-        path.push({ x: targetX, y: currentY });
-        currentX = targetX;
-      }
-      if (targetY !== currentY) {
-        path.push({ x: currentX, y: targetY });
-      }
-
+      if (tx !== cx) { path.push({ x: tx, y: cy }); cx = tx; }
+      if (ty !== cy) { path.push({ x: cx, y: ty }); }
       return path;
     };
 
-    const createStreak = (id: number, targetIndex: number): GridStreak => {
-      const targets = getTargets();
-      const target = targets[targetIndex];
-      const appType: AppType = targetIndex === 0 ? 'sajda' : 'curtask';
-
+    const createStreak = (id: number, targets: Target[]): GridStreak | null => {
+      if (!targets.length) return null;
+      const ti = Math.floor(Math.random() * targets.length);
+      const target = targets[ti];
       const edge = Math.floor(Math.random() * 4);
-      let startX: number, startY: number;
-
+      let sx: number, sy: number;
       switch (edge) {
-        case 0: // top
-          startX = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.width - GRID_SIZE * 4));
-          startY = -GRID_SIZE;
-          break;
-        case 1: // right
-          startX = canvas.width + GRID_SIZE;
-          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7));
-          break;
-        case 2: // bottom
-          startX = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.width - GRID_SIZE * 4));
-          startY = canvas.height + GRID_SIZE;
-          break;
-        case 3: // left
-        default:
-          startX = -GRID_SIZE;
-          startY = snapToGrid(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7));
-          break;
+        case 0: sx = snap(GRID_SIZE * 2 + Math.random() * (canvas.width - GRID_SIZE * 4)); sy = -GRID_SIZE; break;
+        case 1: sx = canvas.width + GRID_SIZE; sy = snap(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7)); break;
+        case 2: sx = snap(GRID_SIZE * 2 + Math.random() * (canvas.width - GRID_SIZE * 4)); sy = canvas.height + GRID_SIZE; break;
+        default: sx = -GRID_SIZE; sy = snap(GRID_SIZE * 2 + Math.random() * (canvas.height * 0.7));
       }
-
-      const path = generateGridPath(startX, startY, target.x, target.y);
-
       return {
         id,
-        path,
-        currentSegment: 0,
+        path: generatePath(sx, sy, target.x, target.y),
         progress: 0,
         speed: 0.003 + Math.random() * 0.002,
         delay: Math.random() * 5000,
         opacity: 0,
         active: false,
         tailLength: 60 + Math.random() * 40,
-        appType,
-        targetIndex,
+        colorKey: target.colorKey,
+        targetIndex: ti,
       };
     };
 
-    // Create streaks - split between two targets
-    const numStreaksPerTarget = 5;
-    streaksRef.current = [
-      ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i, 0)),
-      ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i + numStreaksPerTarget, 1)),
-    ];
+    const buildStreaks = (targets: Target[]) =>
+      Array.from({ length: TOTAL_STREAKS }, (_, i) => createStreak(i, targets))
+        .filter((s): s is GridStreak => s !== null);
 
-    let startTime = Date.now();
-
-    const getPositionAlongPath = (
-      streak: GridStreak,
-      totalDistance: number
-    ): { x: number; y: number } | null => {
-      let remainingDistance = totalDistance;
-
-      for (let i = 0; i < streak.path.length - 1; i++) {
-        const start = streak.path[i];
-        const end = streak.path[i + 1];
-        const segmentLength = Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
-
-        if (remainingDistance <= segmentLength) {
-          const t = segmentLength > 0 ? remainingDistance / segmentLength : 0;
-          return {
-            x: start.x + (end.x - start.x) * t,
-            y: start.y + (end.y - start.y) * t,
-          };
-        }
-        remainingDistance -= segmentLength;
-      }
-
-      return null;
+    const resizeCanvas = () => {
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      targetsCache = measureTargets();
+      streaksRef.current = buildStreaks(targetsCache);
+      startTime = Date.now();
     };
 
-    const getTotalPathLength = (streak: GridStreak): number => {
+    // Set initial canvas size
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    window.addEventListener('resize', resizeCanvas);
+
+    // Measure targets after DOM layout settles
+    setTimeout(() => {
+      targetsCache = measureTargets();
+      streaksRef.current = buildStreaks(targetsCache);
+    }, 100);
+
+    const pathLength = (streak: GridStreak) => {
       let total = 0;
       for (let i = 0; i < streak.path.length - 1; i++) {
-        const start = streak.path[i];
-        const end = streak.path[i + 1];
-        total += Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
+        total += Math.abs(streak.path[i + 1].x - streak.path[i].x) + Math.abs(streak.path[i + 1].y - streak.path[i].y);
       }
       return total;
     };
 
+    const posAtDist = (streak: GridStreak, dist: number) => {
+      let rem = dist;
+      for (let i = 0; i < streak.path.length - 1; i++) {
+        const s = streak.path[i], e = streak.path[i + 1];
+        const len = Math.abs(e.x - s.x) + Math.abs(e.y - s.y);
+        if (rem <= len) {
+          const t = len > 0 ? rem / len : 0;
+          return { x: s.x + (e.x - s.x) * t, y: s.y + (e.y - s.y) * t };
+        }
+        rem -= len;
+      }
+      return null;
+    };
+
     const animate = () => {
-      const currentTime = Date.now();
+      const now = Date.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Regenerate streaks if window was resized
-      if (needsStreakRegen) {
-        needsStreakRegen = false;
-        streaksRef.current = [
-          ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i, 0)),
-          ...Array.from({ length: numStreaksPerTarget }, (_, i) => createStreak(i + numStreaksPerTarget, 1)),
-        ];
-        startTime = Date.now();
-      }
+      // Draw convergence glow at each target
+      targetsCache.forEach((t) => {
+        const colors = COLORS[t.colorKey];
+        const grad = ctx.createRadialGradient(t.x, t.y, 0, t.x, t.y, 60);
+        grad.addColorStop(0, colors.glow[0]);
+        grad.addColorStop(0.5, colors.glow[1]);
+        grad.addColorStop(1, colors.glow[2]);
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, 60, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      });
 
-      const targets = getTargets();
-
-      streaksRef.current.forEach((streak, index) => {
-        if (!streak.active && currentTime - startTime > streak.delay) {
-          streak.active = true;
-        }
-
+      streaksRef.current.forEach((streak, idx) => {
+        if (!streak.active && now - startTime > streak.delay) streak.active = true;
         if (!streak.active) return;
 
-        const target = targets[streak.targetIndex];
-        const colors = COLORS[streak.appType];
+        const target = targetsCache[streak.targetIndex];
+        if (!target) return;
 
-        const totalLength = getTotalPathLength(streak);
-        const currentDistance = streak.progress * totalLength;
-        const headPos = getPositionAlongPath(streak, currentDistance);
+        const colors = COLORS[streak.colorKey];
+        const total = pathLength(streak);
+        const curDist = streak.progress * total;
+        const head = posAtDist(streak, curDist);
 
-        if (!headPos) {
-          streaksRef.current[index] = createStreak(streak.id, streak.targetIndex);
-          streaksRef.current[index].active = true;
-          streaksRef.current[index].delay = 0;
+        if (!head) {
+          const next = createStreak(streak.id, targetsCache);
+          if (next) { next.active = true; next.delay = 0; streaksRef.current[idx] = next; }
           return;
         }
 
-        const distToTarget = Math.sqrt(
-          Math.pow(headPos.x - target.x, 2) + Math.pow(headPos.y - target.y, 2)
-        );
+        const distToTarget = Math.hypot(head.x - target.x, head.y - target.y);
+        streak.opacity = distToTarget > 100
+          ? Math.min(streak.opacity + 0.015, 0.1)
+          : Math.max((distToTarget / 100) * 0.1, 0);
 
-        if (distToTarget > 100) {
-          streak.opacity = Math.min(streak.opacity + 0.015, 0.1);
-        } else {
-          streak.opacity = Math.max((distToTarget / 100) * 0.1, 0);
-        }
-
-        const tailDistance = Math.max(0, currentDistance - streak.tailLength);
-
-        // Draw the streak trail
-        for (let d = tailDistance; d < currentDistance; d += 2) {
-          const pos = getPositionAlongPath(streak, d);
+        const tailStart = Math.max(0, curDist - streak.tailLength);
+        for (let d = tailStart; d < curDist; d += 2) {
+          const pos = posAtDist(streak, d);
           if (!pos) continue;
-
-          const trailProgress = (d - tailDistance) / streak.tailLength;
-          const alpha = trailProgress * streak.opacity;
-
-          // Gradient from start to end color
-          const r = Math.round(colors.trailStart.r + (colors.trailEnd.r - colors.trailStart.r) * trailProgress);
-          const g = Math.round(colors.trailStart.g + (colors.trailEnd.g - colors.trailStart.g) * trailProgress);
-          const b = Math.round(colors.trailStart.b + (colors.trailEnd.b - colors.trailStart.b) * trailProgress);
+          const tp = (d - tailStart) / streak.tailLength;
+          const alpha = tp * streak.opacity;
+          const r = Math.round(colors.trailStart.r + (colors.trailEnd.r - colors.trailStart.r) * tp);
+          const g = Math.round(colors.trailStart.g + (colors.trailEnd.g - colors.trailStart.g) * tp);
+          const b = Math.round(colors.trailStart.b + (colors.trailEnd.b - colors.trailStart.b) * tp);
 
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, 1.5 + trailProgress * 1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          ctx.arc(pos.x, pos.y, 1.5 + tp, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
           ctx.fill();
 
-          // Glow
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, 4 + trailProgress * 2, 0, Math.PI * 2);
+          ctx.arc(pos.x, pos.y, 4 + tp * 2, 0, Math.PI * 2);
           ctx.fillStyle = colors.trailGlow.replace('alpha', String(alpha * 0.15));
           ctx.fill();
         }
 
-        // Draw bright head
         ctx.beginPath();
-        ctx.arc(headPos.x, headPos.y, 2.5, 0, Math.PI * 2);
+        ctx.arc(head.x, head.y, 2.5, 0, Math.PI * 2);
         ctx.fillStyle = colors.head.replace('opacity', String(streak.opacity));
         ctx.fill();
 
-        // Head glow
         ctx.beginPath();
-        ctx.arc(headPos.x, headPos.y, 6, 0, Math.PI * 2);
+        ctx.arc(head.x, head.y, 6, 0, Math.PI * 2);
         ctx.fillStyle = colors.headGlow.replace('opacity', String(streak.opacity * 0.1));
         ctx.fill();
 
         streak.progress += streak.speed;
-      });
-
-      // Draw subtle convergence glow at each target
-      targets.forEach((target, i) => {
-        const colors = i === 0 ? COLORS.sajda : COLORS.curtask;
-        const glowGradient = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, 60);
-        glowGradient.addColorStop(0, colors.glow[0]);
-        glowGradient.addColorStop(0.5, colors.glow[1]);
-        glowGradient.addColorStop(1, colors.glow[2]);
-
-        ctx.beginPath();
-        ctx.arc(target.x, target.y, 60, 0, Math.PI * 2);
-        ctx.fillStyle = glowGradient;
-        ctx.fill();
       });
 
       animationRef.current = requestAnimationFrame(animate);

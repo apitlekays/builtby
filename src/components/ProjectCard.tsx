@@ -103,6 +103,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       href={repoUrl}
       target="_blank"
       rel="noopener noreferrer"
+      data-streak-target={`project-${project.id}`}
       className="group relative p-6 rounded-xl border bg-surface border-border hover:border-accent/50 transition-all duration-300 glow-subtle"
     >
       {/* Header */}

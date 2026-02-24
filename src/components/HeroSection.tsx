@@ -37,7 +37,7 @@ export function HeroSection() {
           style={{ animationDelay: '200ms' }}
         >
           <span className="gradient-text">Hafiz Hanif</span>
-          <span className="text-muted">, PhD</span>
+          <span className="text-muted text-[0.5em]">, PhD</span>
         </h1>
 
         {/* Tagline */}

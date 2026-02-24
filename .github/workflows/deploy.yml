@@ -29,6 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fetch Docker Hub stats
+        run: |
+          curl -sf https://hub.docker.com/v2/repositories/dochafizhanif/meteor-mcp/ \
+            | node -e "const d=require('fs');process.stdin.on('data',c=>{const j=JSON.parse(c);d.writeFileSync('public/docker-stats.json',JSON.stringify({['dochafizhanif/meteor-mcp']:{pulls:j.pull_count,stars:j.star_count}}))})" \
+            || echo '{}' > public/docker-stats.json
+
       - name: Build
         run: npm run build
 

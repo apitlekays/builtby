@@ -58,11 +58,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
       }
     }
 
-    fetch(`https://hub.docker.com/v2/repositories/${project.docker.namespace}/${project.docker.repo}/`)
+    const dockerKey = `${project.docker.namespace}/${project.docker.repo}`;
+    fetch(`${import.meta.env.BASE_URL}docker-stats.json`)
       .then((res) => res.json())
       .then((data) => {
-        setDockerPulls(data.pull_count);
-        sessionStorage.setItem(cacheKey, JSON.stringify({ data: data.pull_count, timestamp: Date.now() }));
+        const pulls = data[dockerKey]?.pulls;
+        if (pulls != null) {
+          setDockerPulls(pulls);
+          sessionStorage.setItem(cacheKey, JSON.stringify({ data: pulls, timestamp: Date.now() }));
+        }
       })
       .catch(() => {});
   }, [project.docker]);

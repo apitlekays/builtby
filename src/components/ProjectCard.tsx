@@ -1,4 +1,4 @@
-import { Github, GitFork, Star } from 'lucide-react';
+import { Github, GitFork, Star, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Project } from '../data/projects';
 
@@ -21,6 +21,7 @@ const languageColors: Record<string, string> = {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const [stats, setStats] = useState<RepoStats | null>(null);
+  const [dockerPulls, setDockerPulls] = useState<number | null>(null);
   const repoUrl = `https://github.com/${project.github.owner}/${project.github.repo}`;
 
   useEffect(() => {
@@ -44,6 +45,28 @@ export function ProjectCard({ project }: ProjectCardProps) {
       .catch(() => {});
   }, [project.github.owner, project.github.repo]);
 
+  useEffect(() => {
+    if (!project.docker) return;
+
+    const cacheKey = `docker-pulls-${project.docker.namespace}-${project.docker.repo}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < 5 * 60 * 1000) {
+        setDockerPulls(data);
+        return;
+      }
+    }
+
+    fetch(`https://hub.docker.com/v2/repositories/${project.docker.namespace}/${project.docker.repo}/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDockerPulls(data.pull_count);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: data.pull_count, timestamp: Date.now() }));
+      })
+      .catch(() => {});
+  }, [project.docker]);
+
   const langColor = languageColors[project.language] ?? '#6b6b6b';
 
   return (
@@ -66,7 +89,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {project.description}
       </p>
 
-      {/* Footer: Language, Stars, Forks, License */}
+      {/* Footer: Language, Stars, Forks, Docker Pulls, License */}
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: langColor }} />
@@ -83,6 +106,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {stats.forks}
             </span>
           </>
+        )}
+        {dockerPulls != null && (
+          <span className="flex items-center gap-1" title="Docker Hub pulls">
+            <Download className="w-3.5 h-3.5" />
+            {dockerPulls}
+          </span>
         )}
         {project.license && (
           <span className="ml-auto text-muted">{project.license}</span>

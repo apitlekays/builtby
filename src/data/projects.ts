@@ -7,6 +7,10 @@ export interface Project {
     owner: string;
     repo: string;
   };
+  docker?: {
+    namespace: string;
+    repo: string;
+  };
   topics?: string[];
   license?: string;
 }
@@ -20,6 +24,10 @@ export const projects: Project[] = [
     language: 'Python',
     github: {
       owner: 'apitlekays',
+      repo: 'meteor-mcp',
+    },
+    docker: {
+      namespace: 'dochafizhanif',
       repo: 'meteor-mcp',
     },
   },

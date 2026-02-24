@@ -11,6 +11,9 @@ export interface Project {
     namespace: string;
     repo: string;
   };
+  npm?: {
+    package: string;
+  };
   topics?: string[];
   license?: string;
 }
@@ -43,5 +46,21 @@ export const projects: Project[] = [
     },
     topics: ['react', 'ui-components'],
     license: 'MIT',
+  },
+  {
+    id: 'my-school-list',
+    name: 'MySchoolList',
+    description:
+      'A JavaScript library for fetching the list of 10,230 schools in Malaysia based on States & Districts. Data sourced from the Ministry of Education Malaysia (June 2022).',
+    language: 'JavaScript',
+    github: {
+      owner: 'apitlekays',
+      repo: 'MySchoolList',
+    },
+    npm: {
+      package: 'my-school-list',
+    },
+    topics: ['malaysian-schools', 'malaysian-states', 'malaysian-education-district-office'],
+    license: 'ISC',
   },
 ];

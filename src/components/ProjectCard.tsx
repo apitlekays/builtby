@@ -1,4 +1,4 @@
-import { Github, GitFork, Star, Download } from 'lucide-react';
+import { Github, GitFork, Star, Download, Package } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Project } from '../data/projects';
 
@@ -22,6 +22,7 @@ const languageColors: Record<string, string> = {
 export function ProjectCard({ project }: ProjectCardProps) {
   const [stats, setStats] = useState<RepoStats | null>(null);
   const [dockerPulls, setDockerPulls] = useState<number | null>(null);
+  const [npmDownloads, setNpmDownloads] = useState<number | null>(null);
   const repoUrl = `https://github.com/${project.github.owner}/${project.github.repo}`;
 
   useEffect(() => {
@@ -71,6 +72,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
       .catch(() => {});
   }, [project.docker]);
 
+  useEffect(() => {
+    if (!project.npm) return;
+
+    const cacheKey = `npm-downloads-${project.npm.package}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < 5 * 60 * 1000) {
+        setNpmDownloads(data);
+        return;
+      }
+    }
+
+    fetch(`https://api.npmjs.org/downloads/point/last-month/${project.npm.package}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.downloads != null) {
+          setNpmDownloads(data.downloads);
+          sessionStorage.setItem(cacheKey, JSON.stringify({ data: data.downloads, timestamp: Date.now() }));
+        }
+      })
+      .catch(() => {});
+  }, [project.npm]);
+
   const langColor = languageColors[project.language] ?? '#6b6b6b';
 
   return (
@@ -115,6 +140,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <span className="flex items-center gap-1" title="Docker Hub pulls">
             <Download className="w-3.5 h-3.5" />
             {dockerPulls}
+          </span>
+        )}
+        {npmDownloads != null && (
+          <span className="flex items-center gap-1" title="npm downloads (monthly)">
+            <Package className="w-3.5 h-3.5" />
+            {npmDownloads.toLocaleString()}
           </span>
         )}
         {project.license && (

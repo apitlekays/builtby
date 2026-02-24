@@ -1,4 +1,4 @@
-import { ExternalLink, GitFork, Star } from 'lucide-react';
+import { Github, GitFork, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Project } from '../data/projects';
 
@@ -58,11 +58,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition-colors">
           {project.name}
         </h3>
-        <ExternalLink className="w-4 h-4 text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-1" />
+        <Github className="w-5 h-5 text-muted-foreground group-hover:text-white transition-colors flex-shrink-0 mt-0.5" />
       </div>
 
       {/* Description */}
-      <p className="text-gray-400 text-sm leading-relaxed mb-5">
+      <p className="text-gray-300 text-sm leading-relaxed mb-5">
         {project.description}
       </p>
 

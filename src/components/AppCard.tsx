@@ -83,7 +83,7 @@ export function AppCard({ app }: AppCardProps) {
       </div>
 
       {/* Description */}
-      <p className="text-gray-400 text-sm leading-relaxed mb-4">
+      <p className="text-gray-300 text-sm leading-relaxed mb-4">
         {app.description}
       </p>
 
@@ -116,7 +116,7 @@ export function AppCard({ app }: AppCardProps) {
           </div>
           <ul className="space-y-1.5">
             {app.features.map((feature, index) => (
-              <li key={index} className="flex items-start gap-2 text-xs text-gray-400">
+              <li key={index} className="flex items-start gap-2 text-xs text-gray-300">
                 <span className="text-orange-500/60 mt-0.5">•</span>
                 <span>{feature}</span>
               </li>

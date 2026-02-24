@@ -17,7 +17,7 @@ export default {
         'surface-elevated': '#181818',
         border: '#1f1f1f',
         'border-bright': '#2a2a2a',
-        muted: '#6b6b6b',
+        muted: '#888888',
         'muted-foreground': '#a1a1a1',
         accent: '#8b5cf6',
         'accent-muted': '#7c3aed',

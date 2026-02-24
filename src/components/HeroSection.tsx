@@ -14,7 +14,7 @@ export function HeroSection() {
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border mb-8 animate-fade-in-up">
           <Sparkles className="w-4 h-4 text-violet-400" />
           <span className="text-sm text-muted-foreground">
-            Scholar <span className="text-border-bright mx-1">•</span> Developer <span className="text-border-bright mx-1">•</span> Educator
+            Scholar <span className="text-muted mx-1">•</span> Developer <span className="text-muted mx-1">•</span> Educator
           </span>
         </div>
 

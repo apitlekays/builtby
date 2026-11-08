@@ -75,6 +75,9 @@ export interface Project {
   npmPackage?: string;
   install?: string;
   screens?: ProjectScreen[];
+  // How search engines should read this project. Left out: web apps become WebApplication,
+  // other apps SoftwareApplication in EducationalApplication, libraries SoftwareSourceCode.
+  schema?: { type?: 'Blog'; category?: string };
 }
 
 export const projects: Project[] = [
@@ -134,6 +137,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'sajda',
+    schema: { category: 'LifestyleApplication' },
     name: 'Sajda',
     kind: 'app',
     audience: 'muslims',
@@ -228,6 +232,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'magicmeeting',
+    schema: { category: 'BusinessApplication' },
     name: 'MagicMeeting',
     kind: 'app',
     audience: 'researchers',
@@ -322,6 +327,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'hackedu',
+    schema: { type: 'Blog' },
     name: 'Hack(edu).tech',
     kind: 'app',
     audience: 'researchers',
@@ -360,6 +366,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'suluh',
+    schema: { category: 'GameApplication' },
     name: 'SULUH',
     kind: 'app',
     audience: 'teachers',

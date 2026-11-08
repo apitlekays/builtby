@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
-import { SajdaPage } from './pages/SajdaPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { ProjectPage } from './pages/ProjectPage';
 
 function App() {
   return (
@@ -9,7 +10,8 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/sajda" element={<SajdaPage />} />
+          <Route path="/:slug" element={<ProjectPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,20 +1,13 @@
-import { ExternalLink, Loader2, Apple, Monitor } from 'lucide-react';
-import { useGitHubRelease } from '../hooks/useGitHubRelease';
+import { Apple, ExternalLink, Loader2, Monitor } from 'lucide-react';
+import { useDownloadOptions, type DownloadOption } from '../hooks/useDownloadOptions';
+import { primaryButtonClass, secondaryButtonClass } from './buttonStyles';
+import { CopyPageLink } from './CopyPageLink';
 
 interface DownloadButtonProps {
   owner: string;
   repo: string;
-  appId?: string;
-}
-
-function getArchFromFilename(filename: string): 'arm64' | 'x64' | 'unknown' {
-  if (filename.includes('aarch64') || filename.includes('arm64')) {
-    return 'arm64';
-  }
-  if (filename.includes('x86_64') || filename.includes('x64') || filename.includes('intel')) {
-    return 'x64';
-  }
-  return 'unknown';
+  projectName: string;
+  platforms: string[];
 }
 
 function formatBytes(bytes: number): string {
@@ -22,117 +15,98 @@ function formatBytes(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-export function DownloadButton({ owner, repo, appId }: DownloadButtonProps) {
-  // Color scheme based on app
-  const isSajda = appId === 'sajda';
-  const buttonClass = isSajda
-    ? 'bg-violet-500 hover:bg-violet-600'
-    : 'bg-accent hover:bg-blue-600';
-  const secondaryButtonClass = isSajda
-    ? 'border-violet-500/30 text-violet-400 hover:bg-violet-500/10'
-    : 'border-accent/30 text-accent hover:bg-accent/10';
-  const { release, loading, error } = useGitHubRelease(owner, repo);
+const mainClass = `${primaryButtonClass} w-full`;
+const secondaryClass = `${secondaryButtonClass} w-full`;
+
+function SystemIcon({ option }: { option: DownloadOption }) {
+  const Icon = option.system === 'mac' ? Apple : Monitor;
+  return <Icon className="w-4 h-4" aria-hidden="true" />;
+}
+
+function ReleaseLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={secondaryClass}>
+      <ExternalLink className="w-4 h-4" aria-hidden="true" />
+      {label}
+    </a>
+  );
+}
+
+export function DownloadButton({ owner, repo, projectName, platforms }: DownloadButtonProps) {
+  const { release, loading, error, device, options, main, others } = useDownloadOptions(owner, repo);
 
   if (loading) {
     return (
-      <button
-        disabled
-        className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg text-muted cursor-wait"
-      >
-        <Loader2 className="w-4 h-4 animate-spin" />
-        <span>Loading...</span>
-      </button>
+      <p className="flex items-center justify-center gap-2 min-h-11 px-4 py-2.5 rounded-md border border-border-bright text-muted-foreground">
+        <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+        Checking the latest version...
+      </p>
     );
   }
 
   if (error || !release) {
+    return <ReleaseLink href={`https://github.com/${owner}/${repo}/releases`} label="View Releases" />;
+  }
+
+  if (options.length === 0) {
+    return <ReleaseLink href={release.htmlUrl} label={`View Release ${release.version}`} />;
+  }
+
+  if (device === 'phone') {
     return (
-      <a
-        href={`https://github.com/${owner}/${repo}/releases`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg text-white hover:border-accent transition-colors"
-      >
-        <ExternalLink className="w-4 h-4" />
-        <span>View Releases</span>
-      </a>
+      <div className="grid gap-3 p-4 rounded-md bg-surface-2 border border-border-bright">
+        <p className="text-foreground leading-relaxed">
+          <span className="font-semibold">{projectName} runs on {platforms.join(' and ')}.</span> Open this page on your
+          computer to download it.
+        </p>
+        <CopyPageLink className={mainClass} />
+      </div>
     );
   }
 
-  // Get macOS .dmg assets
-  const dmgAssets = release.assets.filter((a) => a.name.endsWith('.dmg'));
-
-  // Get Windows .exe assets (setup installer or any .exe)
-  const windowsAsset = release.assets.find((a) =>
-    a.name.endsWith('.exe') || a.name.endsWith('.msi')
-  );
-
-  // Find Apple Silicon and Intel versions
-  const armAsset = dmgAssets.find((a) => getArchFromFilename(a.name) === 'arm64');
-  const intelAsset = dmgAssets.find((a) => getArchFromFilename(a.name) === 'x64');
-
-  // Primary macOS asset: Apple Silicon if available, otherwise first .dmg
-  const primaryMacAsset = armAsset || dmgAssets[0];
-
-  if (!primaryMacAsset && !windowsAsset) {
+  if (!main) {
     return (
-      <a
-        href={release.htmlUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-lg text-white hover:border-accent transition-colors"
-      >
-        <ExternalLink className="w-4 h-4" />
-        <span>View Release {release.version}</span>
-      </a>
+      <div className="grid gap-3">
+        <p className="text-sm text-body leading-relaxed">
+          {device === 'other'
+            ? 'Choose the download for your computer.'
+            : `${projectName} has no download for your computer yet. It runs on ${platforms.join(' and ')}.`}
+        </p>
+        {options.map((option) => (
+          <a key={option.asset.name} href={option.asset.downloadUrl} className={secondaryClass}>
+            <SystemIcon option={option} />
+            {option.label}
+          </a>
+        ))}
+        <p className="label text-muted-foreground text-center">{release.version}</p>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* macOS Download Button */}
-      {primaryMacAsset && (
-        <a
-          href={primaryMacAsset.downloadUrl}
-          className={`flex items-center justify-center gap-2 px-4 py-3 ${buttonClass} rounded-lg text-white font-medium transition-colors`}
-        >
-          <Apple className="w-4 h-4" />
-          <span>Download for {armAsset ? 'Apple Silicon' : 'macOS'}</span>
-        </a>
+    <div className="grid gap-2">
+      <a href={main.asset.downloadUrl} className={mainClass}>
+        <SystemIcon option={main} />
+        {main.label}
+      </a>
+      <p className="label text-muted-foreground text-center">
+        {release.version}, {formatBytes(main.asset.size)}
+      </p>
+      {others.length > 0 && (
+        <details className="text-sm">
+          <summary className="flex items-center justify-center min-h-11 cursor-pointer text-body hover:text-foreground">
+            Other downloads
+          </summary>
+          <div className="grid gap-2 pt-1">
+            {others.map((option) => (
+              <a key={option.asset.name} href={option.asset.downloadUrl} className={secondaryClass}>
+                <SystemIcon option={option} />
+                {option.label}
+              </a>
+            ))}
+          </div>
+        </details>
       )}
-
-      {/* Windows Download Button */}
-      {windowsAsset && (
-        <a
-          href={windowsAsset.downloadUrl}
-          className={`flex items-center justify-center gap-2 px-4 py-2.5 bg-transparent border ${secondaryButtonClass} rounded-lg font-medium transition-colors`}
-        >
-          <Monitor className="w-4 h-4" />
-          <span>Download for Windows</span>
-        </a>
-      )}
-
-      {/* Intel Mac Download Button (if both versions exist) */}
-      {armAsset && intelAsset && (
-        <a
-          href={intelAsset.downloadUrl}
-          className={`flex items-center justify-center gap-2 px-4 py-2.5 bg-transparent border ${secondaryButtonClass} rounded-lg font-medium transition-colors`}
-        >
-          <Apple className="w-4 h-4" />
-          <span>Download for Intel Mac</span>
-        </a>
-      )}
-
-      {/* Version info */}
-      <div className="flex items-center justify-center gap-2 text-xs text-muted">
-        <span className="font-mono">{release.version}</span>
-        {primaryMacAsset && (
-          <>
-            <span>•</span>
-            <span>{formatBytes(primaryMacAsset.size)}</span>
-          </>
-        )}
-      </div>
     </div>
   );
 }

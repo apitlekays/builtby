@@ -1,93 +1,58 @@
-import { ArrowDown, Sparkles } from 'lucide-react';
+import { audiences, projects } from '../data/projects';
+
+const audienceLinkLabels: Record<string, string> = {
+  researchers: 'Researchers',
+  teachers: 'Teachers and students',
+  muslims: 'Muslims',
+  developers: 'Developers',
+};
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 overflow-hidden">
-      {/* Background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[128px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-orange-500/8 rounded-full blur-[128px]" />
-      </div>
-
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border mb-8 animate-fade-in-up">
-          <Sparkles className="w-4 h-4 text-violet-400" />
-          <span className="text-sm text-muted-foreground">
-            Scholar <span className="text-muted mx-1">•</span> Developer <span className="text-muted mx-1">•</span> Educator
-          </span>
+    <section className="wrap">
+      <div className="rack md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="flex flex-col bg-surface min-w-0">
+          <div className="label flex items-center justify-between gap-3 px-3.5 py-2.5 text-muted-foreground">
+            <span>Educational technology</span>
+            <span>UPSI, Malaysia</span>
+          </div>
+          <div className="mt-auto px-4 sm:px-8 lg:px-9 pt-8 sm:pt-14 pb-7 sm:pb-10">
+            <h1 className="text-[clamp(3.25rem,8.4vw,7.4rem)] font-black leading-[0.88] tracking-[-0.045em]">
+              Hafiz
+              <br />
+              Hanif, PhD
+            </h1>
+            <p className="mt-5 sm:mt-6 max-w-[30em] text-lg sm:text-xl leading-snug text-body">
+              I teach and research educational technology at Universiti Pendidikan Sultan Idris, and I build software for
+              teachers, researchers and Muslims.
+            </p>
+          </div>
         </div>
 
-        {/* Profile Image */}
-        <div className="mb-10 flex justify-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-          <div className="relative" data-streak-target="profile">
-            {/* Glow ring */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-orange-500/20 rounded-3xl blur-xl opacity-75" />
+        <div className="grid grid-rows-[auto_1fr] gap-px bg-border min-w-0">
+          <div className="relative aspect-[16/10] md:aspect-[5/4] bg-surface">
             <img
               src="/drHafiz.jpg"
               alt="Dr. Hafiz Hanif"
-              className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl shadow-2xl ring-1 ring-white/10"
+              className="absolute inset-0 w-full h-full object-cover object-[50%_20%]"
             />
           </div>
-        </div>
-
-        {/* Name */}
-        <h1
-          className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 animate-fade-in-up"
-          style={{ animationDelay: '200ms' }}
-        >
-          <span className="gradient-text">Hafiz Hanif</span>
-          <span className="text-muted text-[0.5em]">, PhD</span>
-        </h1>
-
-        {/* Tagline */}
-        <p
-          className="text-xl sm:text-2xl text-muted-foreground mb-6 animate-fade-in-up"
-          style={{ animationDelay: '300ms' }}
-        >
-          Building software that empowers
-        </p>
-
-        {/* Description */}
-        <p
-          className="text-muted max-w-xl mx-auto text-base sm:text-lg leading-relaxed mb-10 animate-fade-in-up"
-          style={{ animationDelay: '400ms' }}
-        >
-          Educational technology researcher turned indie developer.
-          Crafting native desktop apps for macOS and Windows that solve real problems.
-        </p>
-
-        {/* Stats */}
-        <div
-          className="flex flex-wrap justify-center gap-8 sm:gap-12 mb-12 animate-fade-in-up"
-          style={{ animationDelay: '500ms' }}
-        >
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-white">15+</p>
-            <p className="text-xs sm:text-sm text-muted uppercase tracking-wider">Years Research</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-white">2</p>
-            <p className="text-xs sm:text-sm text-muted uppercase tracking-wider">Apps Shipped</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-white">27+</p>
-            <p className="text-xs sm:text-sm text-muted uppercase tracking-wider">Students Mentored</p>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div
-          className="animate-fade-in-up"
-          style={{ animationDelay: '600ms' }}
-        >
-          <a
-            href="#apps"
-            className="inline-flex flex-col items-center gap-2 text-muted hover:text-white transition-colors group"
-          >
-            <span className="text-xs uppercase tracking-wider">Explore Apps</span>
-            <ArrowDown className="w-4 h-4 animate-bounce" />
-          </a>
+          <nav aria-label="Projects by audience" className="flex flex-col justify-center bg-accent-solid text-on-accent">
+            {audiences.map((audience, index) => (
+              <a
+                key={audience.id}
+                href={`#${audience.id}`}
+                className="flex items-center gap-3 min-h-[52px] px-4 font-bold text-[17px] border-t border-on-accent/25 first:border-t-0 hover:bg-white/35 transition-colors"
+              >
+                <span className="font-mono font-semibold text-sm w-6">{String(index + 1).padStart(2, '0')}</span>
+                {audienceLinkLabels[audience.id]}
+                <span className="ml-auto font-mono text-sm">
+                  {projects.filter((project) => project.audience === audience.id).length}
+                  <span className="sr-only"> projects</span>
+                </span>
+              </a>
+            ))}
+          </nav>
         </div>
       </div>
     </section>

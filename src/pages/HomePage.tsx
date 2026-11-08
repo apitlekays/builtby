@@ -1,61 +1,49 @@
-import { apps } from '../data/apps';
-import { projects } from '../data/projects';
-import { AppCard } from '../components/AppCard';
-import { ProjectCard } from '../components/ProjectCard';
-import { HeroSection } from '../components/HeroSection';
 import { AboutSection } from '../components/AboutSection';
+import { HeroSection } from '../components/HeroSection';
+import { ProjectRack } from '../components/ProjectRack';
+import { SectionBar } from '../components/SectionBar';
+import { audiences, projects, type AudienceId } from '../data/projects';
+import { siteDescription, siteTitle } from '../data/site';
+import { usePageMeta } from '../hooks/usePageMeta';
+
+// How wide each group sits on large screens, out of three columns. Muslims and developers share a row.
+const groupWidth: Record<AudienceId, string> = {
+  researchers: 'lg:col-span-3',
+  teachers: 'lg:col-span-3',
+  muslims: 'lg:col-span-1',
+  developers: 'lg:col-span-2',
+};
 
 export function HomePage() {
+  usePageMeta(siteTitle, siteDescription);
+
   return (
     <>
       <HeroSection />
 
-      {/* Apps Grid */}
-      <main id="apps" className="max-w-5xl mx-auto px-6 py-20">
-        <div className="text-center mb-12">
-          <p className="text-muted-foreground text-sm font-medium tracking-wider uppercase mb-3">
-            My Creations
-          </p>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
-            Apps that <span className="gradient-text">solve problems</span>
-          </h2>
-          <p className="text-muted max-w-2xl mx-auto">
-            Native desktop applications for macOS and Windows, crafted with care and attention to detail.
-          </p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {apps.map((app) => (
-            <AppCard key={app.id} app={app} />
-          ))}
+      <main id="projects" className="wrap scroll-mt-4">
+        <h2 className="sr-only">Projects</h2>
+        <div className="grid gap-x-3 lg:grid-cols-3">
+          {audiences.map((audience, index) => {
+            const number = String(index + 1).padStart(2, '0');
+            return (
+              <section
+                key={audience.id}
+                id={audience.id}
+                aria-labelledby={`${audience.id}-title`}
+                className={`mt-7 min-w-0 scroll-mt-4 ${groupWidth[audience.id]}`}
+              >
+                <SectionBar id={`${audience.id}-title`} number={number}>
+                  {audience.title}
+                </SectionBar>
+                <ProjectRack items={projects.filter((project) => project.audience === audience.id)} />
+              </section>
+            );
+          })}
         </div>
       </main>
 
-      {/* Open Source Section */}
-      <section id="open-source" className="border-t border-border">
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <div className="text-center mb-12">
-            <p className="text-muted-foreground text-sm font-medium tracking-wider uppercase mb-3">
-              Open Source
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
-              Projects I <span className="gradient-text">maintain</span>
-            </h2>
-            <p className="text-muted max-w-2xl mx-auto">
-              Tools and libraries I build and share with the developer community.
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <div id="about" className="border-t border-border">
-        <AboutSection />
-      </div>
+      <AboutSection />
     </>
   );
 }

@@ -3,6 +3,8 @@ import { writeFileSync } from 'fs';
 // Add new apps with GitHub releases here
 const REPOS = [
   { owner: 'apitlekays', repo: 'Sajda' },
+  { owner: 'apitlekays', repo: 'magicmeeting-releases' },
+  { owner: 'apitlekays', repo: 'alms-releases' },
 ];
 
 const ASSET_EXTENSIONS = ['.dmg', '.app.tar.gz', '.zip', '.exe', '.msi'];

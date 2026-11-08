@@ -1,141 +1,91 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Instrument Panel look. Every color is a token, so a new look only changes these two sets. */
+  :root {
+    color-scheme: dark;
+    --c-background: 15 15 15;
+    --c-surface: 25 25 25;
+    --c-surface-2: 32 32 32;
+    --c-border: 54 54 52;
+    --c-border-bright: 110 110 105;
+    --c-foreground: 237 237 232;
+    --c-body: 207 207 201;
+    --c-muted: 163 163 156;
+    --c-accent: 74 222 128;
+    --c-accent-solid: 255 214 10;
+    --c-accent-solid-hover: 240 198 0;
+    --c-on-accent: 17 17 17;
+    --c-pending: 245 185 113;
+    --c-bar: 237 237 232;
+    --c-on-bar: 17 17 17;
+    --c-focus: 255 214 10;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --c-background: 228 228 223;
+    --c-surface: 245 245 241;
+    --c-surface-2: 236 236 231;
+    --c-border: 185 185 178;
+    --c-border-bright: 117 117 111;
+    --c-foreground: 17 17 17;
+    --c-body: 51 51 47;
+    --c-muted: 85 85 79;
+    --c-accent: 17 112 58;
+    --c-accent-solid: 255 214 10;
+    --c-accent-solid-hover: 240 198 0;
+    --c-on-accent: 17 17 17;
+    --c-pending: 138 66 8;
+    --c-bar: 17 17 17;
+    --c-on-bar: 245 245 241;
+    --c-focus: 17 17 17;
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-white antialiased;
-    font-family: 'Manrope', system-ui, sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3 {
-    font-family: 'Syne', 'Manrope', sans-serif;
+  :focus-visible {
+    outline: 3px solid rgb(var(--c-focus));
+    outline-offset: 2px;
   }
-}
 
-/* Subtle grid pattern background */
-.bg-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Noise texture overlay */
-.noise-overlay {
-  position: relative;
-}
-
-.noise-overlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Gradient glow effects */
-.glow {
-  box-shadow: 0 0 60px rgba(139, 92, 246, 0.15);
-}
-
-.glow-orange {
-  box-shadow: 0 0 60px rgba(249, 115, 22, 0.2);
-}
-
-.glow-subtle {
-  transition: box-shadow 0.3s ease;
-}
-
-.glow-subtle:hover {
-  box-shadow: 0 0 40px rgba(139, 92, 246, 0.1);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-violet {
-  background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 50%, #6d28d9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.gradient-text-orange {
-  background: linear-gradient(135deg, #fdba74 0%, #f97316 50%, #ea580c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Subtle border glow on hover */
-.border-glow {
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.border-glow:hover {
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
-}
-
-/* Staggered animation delays */
-.animate-delay-100 { animation-delay: 100ms; }
-.animate-delay-200 { animation-delay: 200ms; }
-.animate-delay-300 { animation-delay: 300ms; }
-.animate-delay-400 { animation-delay: 400ms; }
-
-/* Fade in animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
+@layer components {
+  .wrap {
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: clamp(12px, 2.4vw, 28px);
+  }
 
-/* Subtle pulse for badges */
-@keyframes subtlePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
+  /* A rack is a grid of modules separated by hairlines. */
+  .rack {
+    display: grid;
+    gap: 1px;
+    background: rgb(var(--c-border));
+    border: 1px solid rgb(var(--c-border));
+    border-radius: 6px;
+    overflow: hidden;
+  }
 
-.animate-subtle-pulse {
-  animation: subtlePulse 3s ease-in-out infinite;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #262626;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #404040;
+  .label {
+    font-family: 'Chivo Mono', ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 }

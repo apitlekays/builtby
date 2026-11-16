@@ -5,7 +5,8 @@ export type ProjectStatus =
   | 'coming-soon'
   | 'in-development'
   | 'live'
-  | 'open-source';
+  | 'open-source'
+  | 'retired';
 
 export const statusLabels: Record<ProjectStatus, string> = {
   'open-beta': 'Open for beta testing',
@@ -15,6 +16,7 @@ export const statusLabels: Record<ProjectStatus, string> = {
   'in-development': 'In active development',
   live: 'Live',
   'open-source': 'Open source',
+  retired: 'No longer live',
 };
 
 export type AudienceId = 'researchers' | 'teachers' | 'muslims' | 'developers' | 'humanitarians';
@@ -889,6 +891,79 @@ export const projects: Project[] = [
       {
         src: '/screens/siagax-bencana.jpg',
         caption: 'The live map, with river alerts on the left and relief centres and earthquake reports on the right.',
+      },
+    ],
+  },
+  {
+    slug: 'sntracker',
+    schema: { category: 'UtilitiesApplication' },
+    name: 'Sumud Nusantara Tracker',
+    kind: 'app',
+    audience: 'humanitarians',
+    status: 'retired',
+    icon: { src: '/icons/sntracker.png', framed: true },
+    platforms: ['Web', 'Phone and laptop'],
+    tagline: 'A live map that followed the Sumud Nusantara boats sailing to Gaza with the Global Sumud Flotilla.',
+    notice: 'The tracker is no longer online. The screenshots and photos below show it in use.',
+    about: [
+      'The Sumud Nusantara Tracker followed the Sumud Nusantara boats as they sailed across the Mediterranean toward Gaza with the Global Sumud Flotilla in 2026.',
+      'Anyone who signed in with a Google account could follow each boat’s track, replay the voyage, and see events as they were reported, from the flotilla’s own events to attacks and interceptions.',
+      'I built it for MAPIM Strategic Centre.',
+    ],
+    features: [
+      {
+        title: 'Fleet map',
+        detail: 'Every boat’s position and track across the Mediterranean, with the Gaza Strip marked on the map.',
+      },
+      {
+        title: 'Fleet status',
+        detail: 'How many boats were active, attacked or intercepted, the day of the mission, and clocks for local, Europe, Gaza and Türkiye or Saudi time.',
+      },
+      {
+        title: 'Replay',
+        detail: 'Play the voyage back at a chosen speed, and record the replay as a video.',
+      },
+      {
+        title: 'Events timeline',
+        detail: 'A zoomable timeline of flotilla events, missions, attacks and surveillance. Each event has its time, place, photos and source.',
+      },
+      {
+        title: 'Boats and their names',
+        detail: 'Each boat’s details, with the Palestinian place its name commemorates.',
+      },
+      {
+        title: 'News, SOS and live video',
+        detail: 'News updates, SOS videos behind the SOS button, and YouTube channels covering the fleet, shown when they went live.',
+      },
+      {
+        title: 'Command Center',
+        detail: 'A big-screen view with a globe, the mission clock, a countdown and the fleet status.',
+      },
+    ],
+    facts: [
+      { label: 'Ran in', value: 'Your web browser, on phones and laptops' },
+      { label: 'Sign-in', value: 'A Google account' },
+      { label: 'Data', value: 'Forensic Architecture, as credited on the map' },
+      { label: 'Made for', value: 'MAPIM Strategic Centre' },
+      { label: 'Built with', value: 'Meteor, React and MapLibre' },
+    ],
+    actions: [],
+    screens: [
+      {
+        src: '/screens/sntracker-1-map.jpg',
+        caption: 'Day 70 of the mission: the fleet’s tracks across the Mediterranean, with world clocks, fleet counts and the replay controls.',
+      },
+      {
+        src: '/screens/sntracker-2-command-center.jpg',
+        caption: 'The Command Center on a laptop: the mission clock, a countdown and the fleet status.',
+      },
+      {
+        src: '/screens/sntracker-3-phone.jpg',
+        caption: 'The tracker on a phone: an event with its time, place and photos, above the events timeline.',
+      },
+      {
+        src: '/screens/sntracker-4-desk.jpg',
+        caption: 'The desk where I built the tracker, with the fleet map on the main screen.',
       },
     ],
   },

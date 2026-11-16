@@ -15,7 +15,7 @@ const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').repla
 const notOpenYet = ['closed-beta', 'coming-soon', 'in-development'];
 
 const styles = `
-  :root { --bg:#E4E4DF; --mod:#F5F5F1; --mod2:#ECECE7; --ink:#111111; --body:#33332F; --mut:#55554F; --line:#B9B9B2; --sig:#FFD60A; --go:#11703A; --wait:#8A4208; }
+  :root { --bg:#E4E4DF; --mod:#F5F5F1; --mod2:#ECECE7; --ink:#111111; --body:#33332F; --mut:#55554F; --line:#B9B9B2; --sig:#FFD60A; --go:#11703A; --wait:#8A4208; --off:#55554F; }
   * { box-sizing: border-box; }
   html, body { margin: 0; width: 1200px; height: 630px; background: var(--bg); overflow: hidden; }
   body { font-family: 'Chivo', sans-serif; color: var(--ink); padding: 28px; }
@@ -55,6 +55,7 @@ const styles = `
   .led i { width: 14px; height: 14px; border-radius: 50%; display: block; }
   .go { color: var(--go); } .go i { background: var(--go); }
   .wait { color: var(--wait); } .wait i { border: 3px solid var(--wait); }
+  .off { color: var(--off); } .off i { background: var(--off); border-radius: 2px; }
 `;
 
 const mark = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#111111"/><rect x="15" y="10" width="9.5" height="43" rx="1.5" fill="#FFD60A"/><circle cx="33" cy="38.25" r="10.5" fill="none" stroke="#FFD60A" stroke-width="9.5"/></svg>`;
@@ -95,7 +96,7 @@ function homeCard() {
 function projectCard(project) {
   const index = audiences.findIndex((a) => a.id === project.audience);
   const audience = audiences[index];
-  const tone = notOpenYet.includes(project.status) ? 'wait' : 'go';
+  const tone = project.status === 'retired' ? 'off' : notOpenYet.includes(project.status) ? 'wait' : 'go';
   const screen = project.screens?.[0];
   const visual = screen
     ? `<div class="m fill"><img src="${asset(screen.src)}" alt="" style="object-position: top left"></div>`
@@ -111,7 +112,7 @@ function projectCard(project) {
     <div class="right">
       ${visual}
       <div class="m low">
-        <div class="mono"><span>Runs on</span><span>${escape(project.platforms.join(', '))}</span></div>
+        <div class="mono"><span>${project.status === 'retired' ? 'Ran on' : 'Runs on'}</span><span>${escape(project.platforms.join(', '))}</span></div>
         <div class="by"><img src="${asset('drHafiz.jpg')}" alt=""><div><b>Hafiz Hanif, PhD</b><small>Built at UPSI, Malaysia</small></div></div>
       </div>
     </div>

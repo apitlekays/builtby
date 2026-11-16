@@ -72,7 +72,7 @@ A project's `docs` (privacy policy, terms, support, samples) become pages at `/<
 
 ### Styling Conventions
 - All colors are CSS variable tokens set in `src/index.css`, one set per theme, and named in `tailwind.config.js`. Use token classes (`text-body`, `bg-surface`, `text-accent`, `text-pending`), never raw colors, so a new look only changes the tokens.
-- `accent` (green) marks what a visitor can use today, `pending` (amber) marks what is not open yet. `StatusTag` pairs each with a light so color is never the only cue.
+- `accent` (green) marks what a visitor can use today, `pending` (amber) marks what is not open yet, and `muted-foreground` (grey) marks a project that is no longer live (`retired`). `StatusTag` pairs each with a light so color is never the only cue.
 - `accent-solid` is the signal yellow. Text on it is always `text-on-accent`. Use it for the one main action on a page (`primaryButtonClass` in `components/buttonStyles.ts`), the audience index and index numbers, nothing else.
 - Layout is built from racks: `.rack` in `src/index.css` is a grid of modules separated by hairlines, opened by a `SectionBar`. Small uppercase captions use `.label`. Page width comes from `.wrap`.
 - Project index codes (01.1, 02.2) come from the audience order and the project's place in `projects.ts`, so reordering there renumbers them everywhere.

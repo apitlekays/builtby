@@ -94,22 +94,24 @@ function ProjectView({ project }: { project: Project }) {
           </p>
         )}
 
-        <div ref={actionsRef} className="bg-surface px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-start gap-3">
-          {project.download && (
-            <div className="w-full sm:w-72">
-              <DownloadButton
-                owner={project.download.owner}
-                repo={project.download.repo}
-                projectName={project.name}
-                platforms={project.platforms}
-              />
-            </div>
-          )}
-          {primaryAction && <ActionLink action={primaryAction} className={primaryButtonClass} />}
-          {otherActions.map((action) => (
-            <ActionLink key={action.href} action={action} className={secondaryButtonClass} />
-          ))}
-        </div>
+        {hasAction && (
+          <div ref={actionsRef} className="bg-surface px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-start gap-3">
+            {project.download && (
+              <div className="w-full sm:w-72">
+                <DownloadButton
+                  owner={project.download.owner}
+                  repo={project.download.repo}
+                  projectName={project.name}
+                  platforms={project.platforms}
+                />
+              </div>
+            )}
+            {primaryAction && <ActionLink action={primaryAction} className={primaryButtonClass} />}
+            {otherActions.map((action) => (
+              <ActionLink key={action.href} action={action} className={secondaryButtonClass} />
+            ))}
+          </div>
+        )}
 
         {screens.length > 0 && (
           <div className="bg-surface p-3.5 sm:p-5">

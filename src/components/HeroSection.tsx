@@ -1,10 +1,11 @@
-import { audiences, projects } from '../data/projects';
+import { audiences, projects, type AudienceId } from '../data/projects';
 
-const audienceLinkLabels: Record<string, string> = {
+const audienceLinkLabels: Record<AudienceId, string> = {
   researchers: 'Researchers',
   teachers: 'Teachers and students',
   muslims: 'Muslims',
   developers: 'Developers',
+  humanitarians: 'Humanitarian activists',
 };
 
 export function HeroSection() {
@@ -24,7 +25,7 @@ export function HeroSection() {
             </h1>
             <p className="mt-5 sm:mt-6 max-w-[30em] text-lg sm:text-xl leading-snug text-body">
               I teach and research educational technology at Universiti Pendidikan Sultan Idris, and I build software for
-              teachers, researchers and Muslims.
+              teachers, researchers, Muslims and humanitarian activists.
             </p>
           </div>
         </div>

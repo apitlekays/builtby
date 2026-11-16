@@ -17,13 +17,14 @@ export const statusLabels: Record<ProjectStatus, string> = {
   'open-source': 'Open source',
 };
 
-export type AudienceId = 'researchers' | 'teachers' | 'muslims' | 'developers';
+export type AudienceId = 'researchers' | 'teachers' | 'muslims' | 'developers' | 'humanitarians';
 
 export const audiences: { id: AudienceId; title: string }[] = [
   { id: 'researchers', title: 'For researchers' },
   { id: 'teachers', title: 'For teachers and students' },
   { id: 'muslims', title: 'For Muslims' },
   { id: 'developers', title: 'For developers' },
+  { id: 'humanitarians', title: 'For humanitarian activists' },
 ];
 
 export interface ProjectIconSource {
@@ -833,5 +834,62 @@ export const projects: Project[] = [
     npmPackage: 'my-school-list',
     install: 'npm i my-school-list',
     screens: [{ src: '/screens/myschoollist.jpg', caption: 'The MySchoolList documentation page.' }],
+  },
+  {
+    slug: 'siagax-bencana',
+    schema: { category: 'UtilitiesApplication' },
+    name: 'SiagaX Bencana',
+    kind: 'app',
+    audience: 'humanitarians',
+    status: 'live',
+    icon: { src: '/icons/siagax-bencana.png' },
+    platforms: ['Web', 'Installable on phones'],
+    tagline: 'Live flood alerts, river levels and relief centres across Malaysia, on one map.',
+    about: [
+      'SiagaX Bencana puts Malaysia’s flood and disaster warnings on one live map: rivers at alert level, heavy rain, open relief centres, and earthquake and tsunami bulletins.',
+      'Its data comes from official sources. River levels and rainfall come from Public Infobanjir, relief centres (PPS) from JKM, and weather warnings and earthquake bulletins from MET Malaysia.',
+      'I built it and keep it running for MAPIM Strategic Centre.',
+    ],
+    features: [
+      {
+        title: 'River alerts',
+        detail: 'Stations at Alert, Warning or Danger level, with the water level, whether it is rising, and the last hour’s rainfall.',
+      },
+      {
+        title: 'Station history',
+        detail: 'Open a station to see its water level over the past 7 days and its rainfall over the past 3 days.',
+      },
+      {
+        title: 'Relief centres',
+        detail: 'Open JKM relief centres on the map, with each one’s capacity and how many families, adults, children and babies are sheltering there.',
+      },
+      {
+        title: 'Earthquakes and tsunamis',
+        detail: 'MET Malaysia earthquake bulletins from the past 7 days, with the magnitude and any tsunami watch or warning.',
+      },
+      {
+        title: 'Weather warnings',
+        detail: 'MET Malaysia warnings scroll across the top of the map.',
+      },
+      {
+        title: 'Find a place',
+        detail: 'Search for a place in Malaysia and pin it on the map in a colour you choose.',
+      },
+    ],
+    facts: [
+      { label: 'Runs in', value: 'Your web browser, and installs on phones' },
+      { label: 'On phones', value: 'The map only. The alerts and details need a larger screen.' },
+      { label: 'Data from', value: 'Public Infobanjir, JKM and MET Malaysia' },
+      { label: 'Run by', value: 'MAPIM Strategic Centre' },
+      { label: 'Price', value: 'Free' },
+      { label: 'Built with', value: 'Next.js and MapLibre, with OpenFreeMap maps' },
+    ],
+    actions: [{ label: 'Open the live map', href: 'https://bencana.mapim.dev' }],
+    screens: [
+      {
+        src: '/screens/siagax-bencana.jpg',
+        caption: 'The live map, with river alerts on the left and relief centres and earthquake reports on the right.',
+      },
+    ],
   },
 ];

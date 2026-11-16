@@ -6,12 +6,14 @@ import { audiences, projects, type AudienceId } from '../data/projects';
 import { siteDescription, siteTitle } from '../data/site';
 import { usePageMeta } from '../hooks/usePageMeta';
 
-// How wide each group sits on large screens, out of three columns. Muslims and developers share a row.
+// How wide each group sits on large screens, out of three columns. Muslims and developers share a row;
+// humanitarian activists take one column on the row below.
 const groupWidth: Record<AudienceId, string> = {
   researchers: 'lg:col-span-3',
   teachers: 'lg:col-span-3',
   muslims: 'lg:col-span-1',
   developers: 'lg:col-span-2',
+  humanitarians: 'lg:col-span-1',
 };
 
 export function HomePage() {

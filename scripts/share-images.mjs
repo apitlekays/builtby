@@ -36,8 +36,8 @@ const styles = `
   .fill.solo > img { position: static; width: 168px; height: 168px; object-fit: contain; }
   .low { padding: 14px 18px 20px; }
   .low .mono { font-size: 17px; color: var(--mut); display: flex; justify-content: space-between; }
-  .grid { margin-top: 14px; display: grid; grid-template-columns: repeat(5, 56px); justify-content: space-between; row-gap: 14px; }
-  .ic { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--mod2); border: 1px solid var(--line); flex-shrink: 0; }
+  .grid { margin-top: 14px; display: grid; justify-content: space-between; row-gap: 12px; }
+  .ic { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--mod2); border: 1px solid var(--line); flex-shrink: 0; }
   .ic img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
   .ic.framed img { padding: 8px; }
   .ic.full img { padding: 7px; border-radius: 14px; }
@@ -72,19 +72,21 @@ const page = (body) => `<!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;700;800;900&family=Chivo+Mono:wght@500;600&display=swap">
 <style>${styles}</style></head><body>${body}</body></html>`;
 
+// Two rows of icons fit under the photo, so the card shows up to twelve projects.
 function homeCard() {
+  const shown = projects.slice(0, 12);
   return page(`<div class="rack">
     <div class="m left">
       <div class="cap mono"><span>Educational technology</span><span>UPSI, Malaysia</span></div>
       <h1 class="title" data-fit="140">Hafiz<br>Hanif, PhD</h1>
-      <p class="line">Apps, sites and libraries for teachers, researchers and Muslims.</p>
+      <p class="line">Apps, sites and libraries for teachers, researchers, Muslims and humanitarian activists.</p>
       <div class="url">${mark}<span class="mono">builtby.drhafizhanif.net</span></div>
     </div>
     <div class="right">
       <div class="m fill"><img src="${asset('drHafiz.jpg')}" alt="" style="object-position: 50% 18%"></div>
       <div class="m low">
         <div class="mono"><span>Projects</span><span>${projects.length}</span></div>
-        <div class="grid">${projects.slice(0, 10).map(iconTile).join('')}</div>
+        <div class="grid" style="grid-template-columns: repeat(${Math.ceil(shown.length / 2)}, 52px)">${shown.map(iconTile).join('')}</div>
       </div>
     </div>
   </div>`);

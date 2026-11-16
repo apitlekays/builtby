@@ -55,7 +55,7 @@ scripts/            # fetch-releases.js, run during deploy
 1. Add an entry to `src/data/projects.ts`, with its `audience`. The home page group and row, the `/<slug>` page, the related links, the sitemap and the structured data all come from it.
 2. Put its icon in `public/icons/`, and any screenshots in `public/screens/`.
 3. If it has downloads, set `download` and add the repo to `scripts/fetch-releases.js`.
-4. Run `npm run share-images` and commit the new `public/og/<slug>.png`. It draws the 1200x630 link preview for the project (and redraws `public/og-image.png`, whose icon panel shows the first ten projects) with the Google Chrome installed on this computer, so it does not run during deploy. A project without its image falls back to `og-image.png`.
+4. Run `npm run share-images` and commit the new `public/og/<slug>.png`. It draws the 1200x630 link preview for the project (and redraws `public/og-image.png`, whose icon panel shows the first twelve projects in two rows) with the Google Chrome installed on this computer, so it does not run during deploy. A project without its image falls back to `og-image.png`.
 5. If search engines should read it as something other than an educational app, set `schema` (for example `{ category: 'LifestyleApplication' }`, or `{ type: 'Blog' }`).
 
 Only write what the project's own repo, docs or public site says. Do not link to private repos.

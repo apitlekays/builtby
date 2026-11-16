@@ -64,7 +64,7 @@ export function Layout() {
         <div className="rack grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto]">
           <div className="bg-surface px-4 py-4">
             <p className="text-lg font-black tracking-tight">builtby</p>
-            <p className="mt-1 text-sm text-body max-w-xs">Apps, sites and libraries for teachers, researchers and Muslims.</p>
+            <p className="mt-1 text-sm text-body max-w-xs">Apps, sites and libraries for teachers, researchers, Muslims and humanitarian activists.</p>
           </div>
           <ul className="bg-surface px-4 py-4 flex flex-wrap items-center gap-2">
             {footerLinks.map((link) => (

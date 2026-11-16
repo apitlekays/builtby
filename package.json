@@ -9,7 +9,8 @@
     "fetch-releases": "node scripts/fetch-releases.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "share-images": "node scripts/share-images.mjs"
+    "share-images": "node scripts/share-images.mjs",
+    "test": "node --experimental-strip-types --no-warnings --test 'tests/*.test.ts'"
   },
   "dependencies": {
     "lucide-react": "^0.563.0",

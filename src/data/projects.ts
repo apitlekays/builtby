@@ -55,6 +55,31 @@ export interface ProjectScreen {
   caption: string;
 }
 
+// A list in a document: bullets, or downloads (each item a [label](href) link to a file).
+export interface DocList {
+  kind: 'bullets' | 'downloads';
+  items: string[];
+}
+
+// A paragraph is a string; [label](href) inside it becomes a link.
+export type DocBlock = string | DocList;
+
+export interface DocSection {
+  heading: string;
+  blocks: DocBlock[];
+}
+
+// A page that belongs to a project, at /<project>/<slug>: a privacy policy, terms, support, samples.
+export interface ProjectDoc {
+  slug: string;
+  title: string;
+  description: string;
+  // Shown under the title, for example 'Effective 16 November 2026'.
+  dated?: string;
+  intro?: string;
+  sections: DocSection[];
+}
+
 export interface Project {
   slug: string;
   name: string;
@@ -75,6 +100,7 @@ export interface Project {
   npmPackage?: string;
   install?: string;
   screens?: ProjectScreen[];
+  docs?: ProjectDoc[];
   // How search engines should read this project. Left out: web apps become WebApplication,
   // other apps SoftwareApplication in EducationalApplication, libraries SoftwareSourceCode.
   schema?: { type?: 'Blog'; category?: string };
@@ -280,50 +306,291 @@ export const projects: Project[] = [
   },
   {
     slug: 'suluhdiff',
+    schema: { category: 'ProductivityApplication' },
     name: 'SuluhDiff',
     kind: 'app',
     audience: 'researchers',
     status: 'coming-soon',
     icon: { src: '/icons/suluhdiff.png' },
     platforms: ['Mac', 'iPad'],
-    tagline: 'See what changed between drafts, and whether your feedback was addressed.',
-    notice: 'SuluhDiff is coming soon to the App Store for Mac and iPad.',
+    tagline: 'The missing diff tool for writers: see every change between two drafts, and whether your feedback was taken.',
+    notice: 'SuluhDiff is in App Store review and coming soon for Mac and iPad. Comparing drafts is free; one purchase unlocks the rest.',
     about: [
-      'SuluhDiff is for academics who read many versions of the same piece of writing: students’ theses and assignments, colleagues’ papers and your own manuscripts. It compares drafts paragraph by paragraph and word by word.',
+      'SuluhDiff puts two drafts of a thesis, article or novel side by side and shows every word that was added, cut, rewritten or moved, joined by ribbons so you can follow each paragraph from one draft to the next.',
+      'Programmers have always been able to see exactly what changed between two versions of their work. Writers have had to read both drafts and hope they spot the differences. SuluhDiff is for supervisors and lecturers checking a student’s revised chapter, students and researchers revising their own work, and novelists and professional writers reviewing an editor’s pass.',
       'Suluh is Malay for a torch, something that lights the way.',
     ],
     features: [
       {
-        title: 'Projects by role',
-        detail: 'Organise work under Supervising, My Writing, Reviewing for colleagues or Examining, with optional folders for a course or semester.',
+        title: 'Every edit, marked in place',
+        detail: 'Ribbon View joins two drafts side by side. Inline View shows cuts struck through and new text highlighted in one clean read.',
       },
       {
-        title: 'Imports your drafts',
-        detail: 'Word files with tracked changes and comments, PDF with annotations, LaTeX, Markdown and plain text.',
-      },
-      {
-        title: 'Two ways to compare',
-        detail: 'Ribbon View joins two drafts side by side and flags moved paragraphs. Inline View marks changes in one column.',
+        title: 'Moves are moves',
+        detail: 'A paragraph that moved is recognised as a move, not as a deletion and an addition.',
       },
       {
         title: 'Feedback that follows the text',
-        detail: 'Comment on a passage. When the next draft arrives, each comment is checked: unchanged, revised, removed or moved.',
+        detail: 'Comment on any passage. When the next draft arrives, each comment is checked against it: revised, unchanged, removed or moved.',
       },
       {
-        title: 'Academic analysis',
-        detail: 'See how much changed per chapter, which citations were added or removed, and which are missing from the reference list.',
+        title: 'Every citation, accounted for',
+        detail: 'See citations added and removed, and catch citations missing from the reference list before your examiner does.',
       },
       {
-        title: 'Reports',
-        detail: 'Produce an A4 PDF or HTML report of changes and feedback, in English or Bahasa Malaysia, labelled for your role.',
+        title: 'Find across both drafts',
+        detail: 'Follow a key term through a revision: only the changes, only one draft, whole words, or with accents and Arabic harakat ignored.',
+      },
+      {
+        title: 'Reports and revisions',
+        detail: 'Export a change and feedback report as PDF or HTML, in English or Bahasa Malaysia. Fork any draft and edit your own revision beside it.',
+      },
+      {
+        title: 'The files you already have',
+        detail: 'Word with tracked changes and comments, PDF with annotations, LaTeX, Markdown and plain text, including Arabic and Hebrew.',
+      },
+      {
+        title: 'Private by design',
+        detail: 'No account, no tracking, no analytics. Optional sync between your Mac and iPad is end-to-end encrypted in your own iCloud.',
       },
     ],
     facts: [
       { label: 'Runs on', value: 'macOS 26 or later, iPadOS 26 or later' },
-      { label: 'Your data', value: 'Drafts and comments stay on your device and in your own iCloud' },
-      { label: 'Languages', value: 'English and Bahasa Malaysia' },
+      { label: 'Price', value: 'Free to compare drafts. One purchase unlocks comments, reports, Find, revisions and sync on your Mac and iPad, with no subscription.' },
+      { label: 'Languages', value: 'More than 40 interface languages. Reports in English or Bahasa Malaysia.' },
+      { label: 'Your data', value: 'Stays on your device, or end-to-end encrypted in your own iCloud' },
+      { label: 'By', value: 'HackEduTech Labs' },
     ],
-    actions: [],
+    actions: [{ label: 'Try the sample drafts', href: '/suluhdiff/samples' }],
+    screens: [
+      { src: '/screens/suluhdiff-mac-1-novelRibbon.jpg', caption: 'SuluhDiff on the Mac: two drafts of a novel chapter side by side.' },
+      { src: '/screens/suluhdiff-ipad-1-novelRibbon.jpg', caption: 'On the iPad: the missing diff tool for writers.' },
+      { src: '/screens/suluhdiff-ipad-2-novel.jpg', caption: 'For novelists and professional writers: every edit, marked in place.' },
+      { src: '/screens/suluhdiff-ipad-3-feedback.jpg', caption: 'For supervisors and lecturers: know if your feedback was taken.' },
+      { src: '/screens/suluhdiff-ipad-4-citations.jpg', caption: 'For students and researchers: every citation, accounted for.' },
+      { src: '/screens/suluhdiff-ipad-5-find.jpg', caption: 'Find across both drafts: follow a key term through every revision.' },
+      { src: '/screens/suluhdiff-ipad-6-thesis.jpg', caption: 'Chapter by chapter: see where a draft really changed.' },
+      { src: '/screens/suluhdiff-mac-3-feedback.jpg', caption: 'On the Mac: comments checked against the next draft.' },
+      { src: '/screens/suluhdiff-mac-4-citations.jpg', caption: 'On the Mac: citations added, removed and missing.' },
+      { src: '/screens/suluhdiff-mac-5-find.jpg', caption: 'On the Mac: Find in both drafts.' },
+      { src: '/screens/suluhdiff-mac-6-thesis.jpg', caption: 'On the Mac: how much each section changed.' },
+    ],
+    docs: [
+      {
+        slug: 'privacy',
+        title: 'Privacy Policy',
+        description: 'SuluhDiff collects no data: no account, no tracking, no analytics. Your drafts stay on your device, and optional sync is end-to-end encrypted.',
+        dated: 'Effective 16 November 2026',
+        intro: 'SuluhDiff compares drafts of your writing. Your drafts, comments and reports are yours: SuluhDiff does not collect them, and neither does its developer, Mohd Hafiz bin Md Hanif, trading as HackEduTech Labs.',
+        sections: [
+          {
+            heading: 'What SuluhDiff does not collect',
+            blocks: [
+              {
+                kind: 'bullets',
+                items: [
+                  'No account is needed, and SuluhDiff does not ask for your name, email or contacts.',
+                  'No analytics, advertising or tracking of any kind, and no third-party software that does these things.',
+                  'The developer runs no servers for SuluhDiff, so your documents are never sent to the developer.',
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'Where your library is kept',
+            blocks: [
+              'Your projects, drafts, comments and settings are stored on your device. The name you enter as the reviewer appears only in your own comments and reports.',
+            ],
+          },
+          {
+            heading: 'Sync between your devices',
+            blocks: [
+              'Sync is off until you turn it on in Settings › Sync. When it is on, SuluhDiff encrypts your library on your device with a key that only your devices hold, shown to you as a 24-word recovery phrase. The encrypted files are stored in your own iCloud account.',
+              'Apple stores only encrypted data for SuluhDiff. The developer cannot read it and does not have your key.',
+            ],
+          },
+          {
+            heading: 'Purchases',
+            blocks: [
+              'Buying the unlock is handled by Apple through the App Store. The developer does not receive your payment details. [Apple’s privacy policy](https://www.apple.com/legal/privacy/) applies to purchases.',
+            ],
+          },
+          {
+            heading: 'Crash reports',
+            blocks: [
+              'If you choose to share analytics with app developers in your device’s settings, Apple may send the developer anonymous crash reports. These contain technical details about the crash, not your documents.',
+            ],
+          },
+          {
+            heading: 'Children',
+            blocks: ['SuluhDiff collects no personal information from anyone, including children.'],
+          },
+          {
+            heading: 'Changes to this policy',
+            blocks: ['If this policy changes, the new version will be posted on this page with a new effective date.'],
+          },
+          {
+            heading: 'Contact',
+            blocks: ['Questions about privacy: [hello@hackedu.tech](mailto:hello@hackedu.tech).'],
+          },
+        ],
+      },
+      {
+        slug: 'terms',
+        title: 'Terms of Use',
+        description: 'The terms for using SuluhDiff: Apple’s standard licence, the free comparison and the one-time unlock, your content, and who to contact.',
+        dated: 'Effective 16 November 2026',
+        intro: 'SuluhDiff is provided by Mohd Hafiz bin Md Hanif, trading as HackEduTech Labs, in Malaysia (“we”). By downloading or using SuluhDiff you agree to these terms.',
+        sections: [
+          {
+            heading: 'Apple’s licence',
+            blocks: [
+              'SuluhDiff is licensed to you under Apple’s [Licensed Application End User License Agreement](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) (the Apple Standard EULA). These terms add to it. Where the two differ, the Apple Standard EULA applies.',
+            ],
+          },
+          {
+            heading: 'The free comparison and the unlock',
+            blocks: [
+              'Comparing drafts is free. An optional one-time in-app purchase, Unlock SuluhDiff, adds comments, reports, Find, revisions and sync. It is not a subscription and does not renew.',
+              'The purchase is made through the App Store and belongs to your Apple Account, so it unlocks SuluhDiff on your Mac and iPad. To unlock another device, choose Restore Purchase in Settings › General. The price is shown in the App Store before you buy and may change for future buyers; a change never affects a purchase already made.',
+            ],
+          },
+          {
+            heading: 'Refunds',
+            blocks: [
+              'Purchases are processed by Apple, so refunds are handled by Apple under its own rules. You can ask for one at [reportaproblem.apple.com](https://reportaproblem.apple.com).',
+            ],
+          },
+          {
+            heading: 'Your content',
+            blocks: [
+              'Your drafts, comments and reports remain yours, and we receive none of them. You are responsible for having the right to import and keep the documents you compare, including students’ and colleagues’ work, under your institution’s rules.',
+              'SuluhDiff shows differences between texts. It is a tool for reading drafts, not a judgement of their quality or originality, and it is not a plagiarism checker. Check anything important against the documents themselves.',
+            ],
+          },
+          {
+            heading: 'Sync and your recovery phrase',
+            blocks: [
+              'Optional sync stores your encrypted library in your own iCloud account. Only your devices hold the key. Keep your 24-word recovery phrase safe: if it is lost and no device is still syncing, nobody can open the encrypted copy, including us.',
+            ],
+          },
+          {
+            heading: 'Using SuluhDiff fairly',
+            blocks: [
+              'Use SuluhDiff lawfully and in line with the Apple Standard EULA. Do not copy, resell or redistribute the app, or try to get around the unlock.',
+            ],
+          },
+          {
+            heading: 'No warranty, and limits on liability',
+            blocks: [
+              'SuluhDiff is provided as is. To the extent the law allows, we are not liable for lost data or for decisions made on the basis of a comparison. Keep your own copies of important documents.',
+              'Nothing in these terms takes away rights you have under consumer law that cannot be excluded.',
+            ],
+          },
+          {
+            heading: 'Changes and the law that applies',
+            blocks: [
+              'If these terms change, the new version will be posted on this page with a new effective date. These terms are governed by the laws of Malaysia, without limiting the consumer protections of the country where you live.',
+            ],
+          },
+          {
+            heading: 'Contact',
+            blocks: ['Write to [hello@hackedu.tech](mailto:hello@hackedu.tech). See also the [privacy policy](/suluhdiff/privacy).'],
+          },
+        ],
+      },
+      {
+        slug: 'support',
+        title: 'Support',
+        description: 'Help with SuluhDiff on Mac and iPad: the free comparison, the one-time unlock, file types, sync and how to contact the developer.',
+        intro: 'Help with SuluhDiff, the diff tool for writers on Mac and iPad.',
+        sections: [
+          {
+            heading: 'Contact',
+            blocks: [
+              'Write to [hello@hackedu.tech](mailto:hello@hackedu.tech). Please say whether you use a Mac or an iPad, and which version of SuluhDiff. You will usually hear back within two working days.',
+            ],
+          },
+          {
+            heading: 'What can I do for free?',
+            blocks: [
+              'Comparing drafts is always free: import any drafts and see what changed, side by side or inline. One purchase unlocks comments, reports, Find, revisions and sync.',
+            ],
+          },
+          {
+            heading: 'I bought SuluhDiff on my Mac. Do I pay again on my iPad?',
+            blocks: [
+              'No. Sign in to the App Store with the same Apple Account, open SuluhDiff on the iPad, and choose Settings › General › Restore Purchase.',
+            ],
+          },
+          {
+            heading: 'Which files can I compare?',
+            blocks: [
+              'Word (.docx, with tracked changes and comments), PDF (with annotations), LaTeX, Markdown and plain text. To try it out, use the [sample drafts](/suluhdiff/samples).',
+            ],
+          },
+          {
+            heading: 'How do I sync my library between my Mac and iPad?',
+            blocks: [
+              'On the device that has your library, open Settings › Sync and choose Turn On Sync, then write down the 24-word recovery phrase. On your other device, choose Add This Device to a Synced Library and enter the phrase or scan the code. Your library is encrypted before it leaves your device.',
+            ],
+          },
+          {
+            heading: 'I lost my recovery phrase.',
+            blocks: [
+              'On a device that is still syncing, open Settings › Sync and choose Add Another Device, which shows the phrase. If no device is syncing any more, nobody can open the encrypted copy, including the developer, but the library on each device is still there.',
+            ],
+          },
+          {
+            heading: 'Is my writing sent anywhere?',
+            blocks: [
+              'No. Your library stays on your device unless you turn on sync, and then only in encrypted form. See the [privacy policy](/suluhdiff/privacy) and the [terms of use](/suluhdiff/terms).',
+            ],
+          },
+        ],
+      },
+      {
+        slug: 'samples',
+        title: 'Sample drafts',
+        description: 'Two pairs of sample Word drafts to try SuluhDiff with: a novel chapter after an editing pass, and a thesis chapter after a supervisor’s feedback.',
+        intro: 'Two pairs of Word files for trying SuluhDiff. Download both drafts of a pair, then import them into one project: the second draft opens compared with the first.',
+        sections: [
+          {
+            heading: 'A novel chapter after an editing pass',
+            blocks: [
+              'Chapter Four of The Salt Road, a short piece of fiction written for this example. The second draft tightens sentences, moves one paragraph and adds a closing line.',
+              {
+                kind: 'downloads',
+                items: [
+                  '[Draft 1 (salt-road-draft-1.docx)](/suluhdiff/samples/salt-road-draft-1.docx)',
+                  '[Draft 2 (salt-road-draft-2.docx)](/suluhdiff/samples/salt-road-draft-2.docx)',
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'A thesis chapter after a supervisor’s feedback',
+            blocks: [
+              'Chapter 2 of a sample thesis on the digital readiness of rural teachers, written for this example. The second draft adds a definition, fixes a citation year, moves the sampling paragraph out and adds new references.',
+              {
+                kind: 'downloads',
+                items: [
+                  '[Draft 1 (thesis-chapter-2-draft-1.docx)](/suluhdiff/samples/thesis-chapter-2-draft-1.docx)',
+                  '[Draft 2 (thesis-chapter-2-draft-2.docx)](/suluhdiff/samples/thesis-chapter-2-draft-2.docx)',
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'How to try them',
+            blocks: [
+              'On an iPad, tap each file and save it to Files. In SuluhDiff, tap New Project, then Import Draft and pick Draft 1, then import Draft 2.',
+              'On a Mac, choose File › New Project, then File › Import Draft, or drag both files into the window.',
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     slug: 'hackedu',

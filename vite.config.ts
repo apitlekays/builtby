@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { audiences, projects, type Project } from './src/data/projects.ts'
+import { audiences, projects, type Project, type ProjectDoc } from './src/data/projects.ts'
 import { siteDescription, siteImageAlt, siteTitle, siteUrl } from './src/data/site.ts'
 
 const escapeHtml = (text: string) =>
@@ -12,6 +12,7 @@ const toJsonLd = (data: object) =>
   `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`
 
 const projectUrl = (project: Project) => `${siteUrl}/${project.slug}/`
+const docUrl = (project: Project, doc: ProjectDoc) => `${siteUrl}/${project.slug}/${doc.slug}/`
 
 // Each project's preview image comes from `npm run share-images`. A project without one yet uses the site image.
 const shareImage = (project?: Project) =>
@@ -131,6 +132,37 @@ function projectData(project: Project) {
   })
 }
 
+// A project's own page (privacy policy, terms, support, samples): a WebPage inside the project's breadcrumb.
+function docData(project: Project, doc: ProjectDoc) {
+  const audience = audiences.find((a) => a.id === project.audience)
+  const url = docUrl(project, doc)
+  return toJsonLd({
+    '@context': 'https://schema.org',
+    '@graph': [
+      website,
+      person,
+      {
+        '@type': 'WebPage',
+        '@id': url,
+        url,
+        name: `${doc.title} | ${project.name}`,
+        description: doc.description,
+        isPartOf: { '@id': `${siteUrl}/#website` },
+        about: { '@id': `${projectUrl(project)}#project` },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'builtby', item: `${siteUrl}/` },
+            { '@type': 'ListItem', position: 2, name: audience?.title ?? 'Projects', item: `${siteUrl}/#${project.audience}` },
+            { '@type': 'ListItem', position: 3, name: project.name, item: projectUrl(project) },
+            { '@type': 'ListItem', position: 4, name: doc.title, item: url },
+          ],
+        },
+      },
+    ],
+  })
+}
+
 const projectLinks = () =>
   projects
     .map((p) => `<li><a href="/${p.slug}/">${escapeHtml(p.name)}</a>: ${escapeHtml(p.tagline)}</li>`)
@@ -213,7 +245,28 @@ function projectPages(): Plugin {
         )
       }
 
-      const urls = [`${siteUrl}/`, ...projects.map(projectUrl)]
+      for (const project of projects) {
+        for (const doc of project.docs ?? []) {
+          const directory = join('dist', project.slug, doc.slug)
+          mkdirSync(directory, { recursive: true })
+          writeFileSync(
+            join(directory, 'index.html'),
+            pageHtml(template, {
+              url: docUrl(project, doc),
+              title: `${doc.title} | ${project.name}`,
+              description: doc.description,
+              image: shareImage(project),
+              imageAlt: `${project.name}: ${project.tagline}`,
+              structuredData: docData(project, doc),
+            }),
+          )
+        }
+      }
+
+      const urls = [
+        `${siteUrl}/`,
+        ...projects.flatMap((project) => [projectUrl(project), ...(project.docs ?? []).map((doc) => docUrl(project, doc))]),
+      ]
       writeFileSync(
         'dist/sitemap.xml',
         `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls

@@ -29,6 +29,9 @@ npm run preview
 
 # Lint code
 npm run lint
+
+# Tests (run after a build to include the built-page checks)
+npm test
 ```
 
 ## Project Structure
@@ -56,6 +59,9 @@ scripts/            # fetch-releases.js, run during deploy
 5. If search engines should read it as something other than an educational app, set `schema` (for example `{ category: 'LifestyleApplication' }`, or `{ type: 'Blog' }`).
 
 Only write what the project's own repo, docs or public site says. Do not link to private repos.
+
+### Project Documents
+A project's `docs` (privacy policy, terms, support, samples) become pages at `/<slug>/<doc>`, linked from the project page's Details panel. Paragraphs are plain strings, and `[label](href)` inside them becomes a link. Files a document links to (such as sample downloads) go in `public/<slug>/`. `npm test` checks that every local link points at a real page or file, and, after a build, that each document has its own page and sitemap entry; the deploy runs it.
 
 ### Project Pages
 `vite.config.ts` writes `dist/<slug>/index.html` and `dist/sitemap.xml` at build time, so each page returns a 200 on GitHub Pages with its own title, description, canonical and language tags, preview image and structured data (WebPage with breadcrumbs, plus the project as SoftwareApplication, WebApplication, SoftwareSourceCode or Blog).

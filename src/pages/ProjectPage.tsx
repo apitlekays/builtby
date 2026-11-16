@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { ActionLink } from '../components/ActionLink';
 import { DownloadButton } from '../components/DownloadButton';
 import { OpenSourceStats } from '../components/OpenSourceStats';
 import { ProjectIcon } from '../components/ProjectIcon';
@@ -104,17 +105,9 @@ function ProjectView({ project }: { project: Project }) {
               />
             </div>
           )}
-          {primaryAction && (
-            <a href={primaryAction.href} target="_blank" rel="noopener noreferrer" className={primaryButtonClass}>
-              {primaryAction.label}
-              <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
-            </a>
-          )}
+          {primaryAction && <ActionLink action={primaryAction} className={primaryButtonClass} />}
           {otherActions.map((action) => (
-            <a key={action.href} href={action.href} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>
-              {action.label}
-              <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
-            </a>
+            <ActionLink key={action.href} action={action} className={secondaryButtonClass} />
           ))}
         </div>
 
@@ -165,6 +158,20 @@ function ProjectView({ project }: { project: Project }) {
               ))}
               <OpenSourceStats project={project} />
             </dl>
+            {project.docs && project.docs.length > 0 && (
+              <nav aria-label={`${project.name} help and policies`} className="grid gap-px bg-border">
+                {project.docs.map((doc) => (
+                  <Link
+                    key={doc.slug}
+                    to={`/${project.slug}/${doc.slug}`}
+                    className="bg-surface hover:bg-surface-2 px-4 py-3 min-h-11 flex items-center justify-between gap-3 font-semibold transition-colors"
+                  >
+                    {doc.title}
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                  </Link>
+                ))}
+              </nav>
+            )}
             {project.install && (
               <div className="bg-surface px-4 py-3">
                 <h3 className="label text-muted-foreground">Install</h3>

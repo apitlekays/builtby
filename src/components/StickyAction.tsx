@@ -1,5 +1,6 @@
 import type { Project } from '../data/projects';
 import { useDownloadOptions } from '../hooks/useDownloadOptions';
+import { ActionLink } from './ActionLink';
 import { primaryButtonClass } from './buttonStyles';
 import { CopyPageLink } from './CopyPageLink';
 import { ProjectIcon } from './ProjectIcon';
@@ -41,9 +42,9 @@ export function StickyAction({ project }: { project: Project }) {
           <DownloadAction owner={project.download.owner} repo={project.download.repo} />
         ) : (
           action && (
-            <a href={action.href} target="_blank" rel="noopener noreferrer" className={buttonClass}>
+            <ActionLink action={action} className={buttonClass}>
               {action.label}
-            </a>
+            </ActionLink>
           )
         )}
       </div>

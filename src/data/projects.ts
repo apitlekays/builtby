@@ -680,12 +680,13 @@ export const projects: Project[] = [
     status: 'in-development',
     icon: { src: '/icons/suluhalms.png' },
     platforms: ['macOS'],
-    tagline: 'Turns a PDF, Word file, web page or YouTube lecture into a self-paced mastery course.',
+    tagline: 'A study companion that turns a PDF, Word file, web page or YouTube lecture into a self-paced mastery course.',
     notice: 'SuluhALMS is in a pilot at UPSI and still in active development. Builds for Apple silicon Macs are public.',
     about: [
-      'SuluhALMS turns your teaching material into a self-paced course: objectives, units, unit videos, questions and spaced review.',
-      'Learners move unit by unit. A unit opens once the one before is mastered at 80 percent, and anyone who falls short gets corrective lessons and a fresh retest. Every explanation and question cites the page or section it came from.',
-      'Answers and progress stay on the Mac, and there is no account. Only the course text goes to the AI provider you choose, and with Ollama nothing leaves the Mac at all.',
+      'SuluhALMS is a study companion for anyone learning something in a structured way: a student working through a textbook, a teacher taking on a new topic, or anyone who wants to really understand a long lecture. Give it your material and it builds a self-paced course with objectives, units, narrated unit videos, questions and spaced review, then takes you through it one step at a time.',
+      'Behind it is a team of AI agents led by an Orchestrator. A Source Analyst reads your material, a Curriculum Architect plans the units, an Instructional Designer writes the lessons, an Assessment Designer writes the questions and a Media Producer makes the videos. A Quality Auditor checks their work against the source before you see it. While you learn, a Learning Analyst reads your wrong answers and a Tutor answers your questions. The agent log shows which agent did what, and whether a rule or the AI model made each decision.',
+      'A unit opens once the one before is mastered at 80 percent, and every explanation and question cites the page or section it came from.',
+      'Answers and progress stay on the Mac, and there is no account. Only the course text goes to the AI provider you choose (and the narration to HeyGen, if you add a HeyGen key). With Ollama, nothing leaves the Mac at all.',
     ],
     features: [
       {
@@ -693,38 +694,60 @@ export const projects: Project[] = [
         detail: 'Start from a PDF, including scanned pages, a Word file, a web page or a YouTube lecture. Long books are split into chapters so you choose what to cover.',
       },
       {
-        title: 'Mastery path',
-        detail: 'Every learner starts at the first unit. The level you pick sets the depth, from plain language for beginners to critique and transfer for experts.',
+        title: 'One step at a time',
+        detail: 'Each unit is a short path: your task, watch, read, practise, unit test. A quick check closes each section, and a daily goal and streak keep you going. The level you pick sets the depth, from plain language to critique and transfer.',
+      },
+      {
+        title: 'A Tutor beside every unit',
+        detail: 'Ask about a section, a passage you select or a moment in the video. The Tutor answers from the unit’s own pages, names them, says when it goes beyond the course, and gives hints before answers.',
+      },
+      {
+        title: 'Help when you are stuck',
+        detail: 'Fall short of 80 percent and each missed objective is taught a different way, followed by a retest with new questions. Miss it again and the Orchestrator picks the next step, such as smaller steps, a recap of an earlier unit or a moment in the video, and tells you why.',
+      },
+      {
+        title: 'Nine agents, one Orchestrator',
+        detail: 'Rules handle scheduling, retries and the spending limit. The AI model is asked only where judgement helps: spotting a misconception in your wrong answers, re-planning for a stuck learner, or deciding what to do with work the Quality Auditor keeps rejecting.',
+      },
+      {
+        title: 'Checked before you see it',
+        detail: 'Every lesson, question and video script is checked against the source. A wrong answer key goes back to the agent that wrote it, and a question still wrong after two rewrites is left out. You can still report a question; it stops counting and a replacement is written.',
       },
       {
         title: 'Unit videos',
-        detail: 'Each unit gets a narrated video with drawn diagrams. Questions pause the video, and a wrong answer offers to rewind to the part that explains it.',
+        detail: 'Each unit gets a narrated video with designed scenes such as timelines, cycles, comparisons and charts, drawn only from numbers in your source. Questions pause the video, and a wrong answer offers to rewind to the part that explains it.',
       },
       {
         title: 'Spaced review',
-        detail: 'Questions come back on a schedule, so learners revisit what they are about to forget.',
-      },
-      {
-        title: 'Report a problem',
-        detail: 'A learner can flag a question that seems wrong. It stops counting toward the score and a replacement is written.',
+        detail: 'Questions come back on a schedule, so you revisit what you are about to forget.',
       },
       {
         title: 'Share a course',
         detail: 'Build a course once and export it as one file. It opens on another Mac with its videos ready, with nothing rebuilt or paid for again.',
       },
       {
-        title: 'Analytics',
-        detail: 'See mastery per objective, time on task, video engagement and common misconceptions, and export a PDF report in English or Bahasa Malaysia.',
+        title: 'Analytics and cost',
+        detail: 'See mastery per objective, time on task, video engagement and misconceptions, and export a PDF report in English or Bahasa Malaysia. Each course shows what its AI has cost so far, and you can set a limit.',
       },
     ],
     facts: [
       { label: 'Runs on', value: 'macOS 14 or later, Apple silicon' },
-      { label: 'AI provider', value: 'Your own Claude or OpenAI key, or Ollama running on the Mac' },
+      { label: 'AI provider', value: 'Your own Claude or OpenAI key, or Ollama running on the Mac. With Claude, the agents choose Sonnet or Haiku for each job.' },
+      { label: 'Narration', value: 'With a HeyGen key, Bahasa Malaysia in the voice cloned on your HeyGen account and English in a native English voice; otherwise a macOS voice' },
       { label: 'Languages', value: 'English and Bahasa Malaysia' },
       { label: 'Stage', value: 'Pilot at UPSI' },
     ],
     actions: [{ label: 'All releases', href: 'https://github.com/apitlekays/alms-releases/releases' }],
     download: { owner: 'apitlekays', repo: 'alms-releases' },
+    screens: [
+      { src: '/screens/suluhalms-1-home.jpg', caption: 'A course home: your path, today’s streak and the agent log, where the Orchestrator re-plans for two missed objectives.' },
+      { src: '/screens/suluhalms-2-tutor.jpg', caption: 'Reading with the Tutor beside you. The section was rewritten for this learner, and the Tutor cites the source and says when it goes beyond it.' },
+      { src: '/screens/suluhalms-3-corrective.jpg', caption: 'A corrective plan: each missed objective taught a different way before a retest.' },
+      { src: '/screens/suluhalms-4-why.jpg', caption: 'Why this plan: the reason for each choice, with a next step you can take.' },
+      { src: '/screens/suluhalms-5-video.jpg', caption: 'A scene from a unit video: a process, then a worked case, each step appearing as it is spoken. Bahasa Malaysia course.' },
+      { src: '/screens/suluhalms-6-analytics.jpg', caption: 'Analytics: mastery for every objective against the 80 percent line.' },
+      { src: '/screens/suluhalms-7-task-ms.jpg', caption: 'A Bahasa Malaysia course in the English interface: the unit’s task comes first.' },
+    ],
   },
   {
     slug: 'spectre-ui',

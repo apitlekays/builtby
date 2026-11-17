@@ -313,11 +313,11 @@ export const projects: Project[] = [
     name: 'SuluhDiff',
     kind: 'app',
     audience: 'researchers',
-    status: 'coming-soon',
+    status: 'available',
     icon: { src: '/icons/suluhdiff.png' },
     platforms: ['Mac', 'iPad'],
     tagline: 'The missing diff tool for writers: see every change between two drafts, and whether your feedback was taken.',
-    notice: 'SuluhDiff is in App Store review and coming soon for Mac and iPad. Comparing drafts is free; one purchase unlocks the rest.',
+    notice: 'SuluhDiff for iPad is on the App Store now, and the Mac version is in App Store review. Comparing drafts is free; one purchase unlocks the rest.',
     about: [
       'SuluhDiff puts two drafts of a thesis, article or novel side by side and shows every word that was added, cut, rewritten or moved, joined by ribbons so you can follow each paragraph from one draft to the next.',
       'Programmers have always been able to see exactly what changed between two versions of their work. Writers have had to read both drafts and hope they spot the differences. SuluhDiff is for supervisors and lecturers checking a student’s revised chapter, students and researchers revising their own work, and novelists and professional writers reviewing an editor’s pass.',
@@ -364,7 +364,10 @@ export const projects: Project[] = [
       { label: 'Your data', value: 'Stays on your device, or end-to-end encrypted in your own iCloud' },
       { label: 'By', value: 'HackEduTech Labs' },
     ],
-    actions: [{ label: 'Try the sample drafts', href: '/suluhdiff/samples' }],
+    actions: [
+      { label: 'Download on the App Store', href: 'https://apps.apple.com/app/suluhdiff/id6831143497' },
+      { label: 'Try the sample drafts', href: '/suluhdiff/samples' },
+    ],
     screens: [
       { src: '/screens/suluhdiff-mac-1-novelRibbon.jpg', caption: 'SuluhDiff on the Mac: two drafts of a novel chapter side by side.' },
       { src: '/screens/suluhdiff-ipad-1-novelRibbon.jpg', caption: 'On the iPad: the missing diff tool for writers.' },

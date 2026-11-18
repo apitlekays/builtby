@@ -65,3 +65,19 @@ test('the build writes each document as its own page and lists it in the sitemap
     }
   }
 });
+
+test('the build writes each project page with its own text, for crawlers that do not run JavaScript', { skip: !existsSync('dist/index.html') && 'run npm run build first' }, () => {
+  for (const project of projects) {
+    const html = readFileSync(join('dist', project.slug, 'index.html'), 'utf8');
+    const root = html.slice(html.indexOf('<div id="root">'));
+    assert.match(root, /<h1[^>]*>[^<]/, `${project.slug} has no heading in its HTML`);
+    assert.ok(root.includes(project.name.replace(/&/g, '&amp;')), `${project.slug} HTML is missing its name`);
+    assert.ok(root.includes(project.features[0].title.replace(/&/g, '&amp;').replace(/'/g, '&#x27;')), `${project.slug} HTML is missing its features`);
+  }
+});
+
+test('SuluhDiff search title and description fit in search results', () => {
+  assert.ok(suluhdiff?.search);
+  assert.ok(suluhdiff.search.title.length <= 60, 'title over 60 characters');
+  assert.ok(suluhdiff.search.description.length <= 155, 'description over 155 characters');
+});

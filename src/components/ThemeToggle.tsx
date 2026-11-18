@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
-const readTheme = (): Theme => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+// The build renders pages without a document, so it assumes dark until the browser takes over.
+const readTheme = (): Theme =>
+  typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(readTheme);

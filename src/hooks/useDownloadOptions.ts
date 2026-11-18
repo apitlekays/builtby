@@ -9,6 +9,7 @@ export interface DownloadOption {
 }
 
 function detectDevice(): VisitorDevice {
+  if (typeof navigator === 'undefined') return 'other';
   const agent = navigator.userAgent;
   // iPadOS reports itself as a Mac, so touch support tells them apart.
   const isIpad = /Macintosh/.test(agent) && navigator.maxTouchPoints > 1;

@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { defineConfig, type Plugin } from 'vite'
+import { createServer, defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { audiences, projects, type Project, type ProjectDoc } from './src/data/projects.ts'
+import { audiences, pageDescription, pageTitle, projects, type Project, type ProjectDoc } from './src/data/projects.ts'
 import { siteDescription, siteImageAlt, siteTitle, siteUrl } from './src/data/site.ts'
 
 const escapeHtml = (text: string) =>
@@ -75,7 +75,11 @@ function projectEntity(project: Project) {
     '@type': project.platforms[0] === 'Web' ? 'WebApplication' : 'SoftwareApplication',
     ...base,
     applicationCategory: project.schema?.category ?? 'EducationalApplication',
-    operatingSystem: project.platforms.join(', '),
+    // The exact versions from the Runs on fact say more than the platform names.
+    operatingSystem: project.facts.find((fact) => fact.label === 'Runs on')?.value ?? project.platforms.join(', '),
+    featureList: project.features.map((feature) => `${feature.title}: ${feature.detail}`),
+    offers: project.schema?.free ? { '@type': 'Offer', price: '0', priceCurrency: 'USD' } : undefined,
+    publisher: project.schema?.publisher ? { '@type': 'Organization', name: project.schema.publisher } : undefined,
     screenshot: project.screens?.map((screen) => `${siteUrl}${encodeURI(screen.src)}`),
     downloadUrl: project.download
       ? `https://github.com/${project.download.owner}/${project.download.repo}/releases/latest`
@@ -113,8 +117,8 @@ function projectData(project: Project) {
         '@type': 'WebPage',
         '@id': projectUrl(project),
         url: projectUrl(project),
-        name: `${project.name} | builtby.`,
-        description: project.about[0],
+        name: pageTitle(project),
+        description: pageDescription(project),
         isPartOf: { '@id': `${siteUrl}/#website` },
         about: { '@id': `${projectUrl(project)}#project` },
         primaryImageOfPage: shareImage(project),
@@ -163,11 +167,6 @@ function docData(project: Project, doc: ProjectDoc) {
   })
 }
 
-const projectLinks = () =>
-  projects
-    .map((p) => `<li><a href="/${p.slug}/">${escapeHtml(p.name)}</a>: ${escapeHtml(p.tagline)}</li>`)
-    .join('')
-
 interface PageMeta {
   url: string
   title: string
@@ -175,6 +174,8 @@ interface PageMeta {
   image: string
   imageAlt: string
   structuredData: string
+  // The page as React renders it, so crawlers that don't run JavaScript still read its text.
+  body: string
 }
 
 // Writes one page's own address, words and preview image into every tag that names them.
@@ -204,6 +205,7 @@ function pageHtml(template: string, page: PageMeta) {
     setContent('name="twitter:image"', page.image),
     setContent('name="twitter:image:alt"', safe.imageAlt),
     (html: string) => html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, () => page.structuredData),
+    (html: string) => html.replace('<div id="root"></div>', () => `<div id="root">${page.body}</div>`),
   ]
   return edits.reduce((html, edit) => edit(html), template)
 }
@@ -215,9 +217,7 @@ function projectPages(): Plugin {
     name: 'project-pages',
     transformIndexHtml: (html) =>
       pageHtml(
-        html
-          .replace('<!-- structured-data -->', () => homeData())
-          .replace('<!-- project-links -->', () => `<ul>${projectLinks()}</ul>`),
+        html.replace('<!-- structured-data -->', () => homeData()),
         {
           url: `${siteUrl}/`,
           title: siteTitle,
@@ -225,10 +225,25 @@ function projectPages(): Plugin {
           image: shareImage(),
           imageAlt: siteImageAlt,
           structuredData: homeData(),
+          // closeBundle fills the home page's body once the build is done.
+          body: '',
         },
       ),
-    closeBundle() {
+    async closeBundle() {
       const template = readFileSync('dist/index.html', 'utf8')
+
+      // Render each page with the app's own components, the same markup the browser draws.
+      const server = await createServer({
+        configFile: false,
+        logLevel: 'error',
+        appType: 'custom',
+        server: { middlewareMode: true, hmr: false, ws: false },
+        plugins: [react()],
+      })
+      const { render } = (await server.ssrLoadModule('/src/entry-server.tsx')) as { render: (path: string) => string }
+
+      writeFileSync('dist/index.html', template.replace('<div id="root"></div>', () => `<div id="root">${render('/')}</div>`))
+
       for (const project of projects) {
         const directory = join('dist', project.slug)
         mkdirSync(directory, { recursive: true })
@@ -236,11 +251,12 @@ function projectPages(): Plugin {
           join(directory, 'index.html'),
           pageHtml(template, {
             url: projectUrl(project),
-            title: `${project.name} | builtby.`,
-            description: project.about[0],
+            title: pageTitle(project),
+            description: pageDescription(project),
             image: shareImage(project),
             imageAlt: `${project.name}: ${project.tagline}`,
             structuredData: projectData(project),
+            body: render(`/${project.slug}`),
           }),
         )
       }
@@ -258,6 +274,7 @@ function projectPages(): Plugin {
               image: shareImage(project),
               imageAlt: `${project.name}: ${project.tagline}`,
               structuredData: docData(project, doc),
+              body: render(`/${project.slug}/${doc.slug}`),
             }),
           )
         }
@@ -273,6 +290,7 @@ function projectPages(): Plugin {
           .map((url) => `  <url><loc>${url}</loc></url>`)
           .join('\n')}\n</urlset>\n`,
       )
+      await server.close()
     },
   }
 }

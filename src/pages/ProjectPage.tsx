@@ -10,7 +10,7 @@ import { LeadScreen, MoreScreens, ScreenViewer } from '../components/ScreenGalle
 import { SectionBar } from '../components/SectionBar';
 import { StatusTag } from '../components/StatusTag';
 import { StickyAction } from '../components/StickyAction';
-import { audiences, projects, type Project } from '../data/projects';
+import { audiences, pageDescription, pageTitle, projects, type Project } from '../data/projects';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { NotFoundPage } from './NotFoundPage';
 import { primaryButtonClass, secondaryButtonClass } from '../components/buttonStyles';
@@ -41,7 +41,7 @@ function useScrolledPast() {
 }
 
 function ProjectView({ project }: { project: Project }) {
-  usePageMeta(`${project.name} | builtby.`, project.about[0]);
+  usePageMeta(pageTitle(project), pageDescription(project));
 
   // A download button is the main action when there is one.
   const primaryAction = project.download ? undefined : project.actions[0];

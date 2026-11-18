@@ -7,7 +7,7 @@ interface CopyPageLinkProps {
 
 export function CopyPageLink({ className, label = 'Copy link to this page' }: CopyPageLinkProps) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const url = window.location.href;
+  const url = typeof window === 'undefined' ? '' : window.location.href;
 
   const copy = async () => {
     try {

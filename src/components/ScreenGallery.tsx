@@ -76,7 +76,7 @@ function ScreenButton({ screen, onOpen, wide }: { screen: ProjectScreen; onOpen:
       >
         <img
           src={screen.src}
-          alt=""
+          alt={screen.caption}
           loading={wide ? 'eager' : 'lazy'}
           className={wide ? 'block mx-auto max-w-full h-auto' : 'block w-full h-auto'}
         />

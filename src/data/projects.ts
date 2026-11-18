@@ -106,8 +106,15 @@ export interface Project {
   docs?: ProjectDoc[];
   // How search engines should read this project. Left out: web apps become WebApplication,
   // other apps SoftwareApplication in EducationalApplication, libraries SoftwareSourceCode.
-  schema?: { type?: 'Blog'; category?: string };
+  // `free` adds a price-0 offer; `publisher` names who releases it, when that isn't me.
+  schema?: { type?: 'Blog'; category?: string; free?: boolean; publisher?: string };
+  // The page title and description in search results, when the name and first paragraph
+  // don't say what people search for. Keep the title under 60 characters and the description under 155.
+  search?: { title: string; description: string };
 }
+
+export const pageTitle = (project: Project) => project.search?.title ?? `${project.name} | builtby.`;
+export const pageDescription = (project: Project) => project.search?.description ?? project.about[0];
 
 export const projects: Project[] = [
   {
@@ -309,7 +316,12 @@ export const projects: Project[] = [
   },
   {
     slug: 'suluhdiff',
-    schema: { category: 'ProductivityApplication' },
+    schema: { category: 'ProductivityApplication', free: true, publisher: 'HackEduTech Labs' },
+    search: {
+      title: 'SuluhDiff: compare two drafts on Mac and iPad | builtby.',
+      description:
+        'Compare two drafts of a thesis, article or novel on Mac and iPad. See every word added, cut, rewritten or moved, and whether your feedback was taken.',
+    },
     name: 'SuluhDiff',
     kind: 'app',
     audience: 'researchers',

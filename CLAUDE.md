@@ -57,6 +57,7 @@ scripts/            # fetch-releases.js, run during deploy
 3. If it has downloads, set `download` and add the repo to `scripts/fetch-releases.js`.
 4. Run `npm run share-images` and commit the new `public/og/<slug>.png`. It draws the 1200x630 link preview for the project (and redraws `public/og-image.png`, whose icon panel shows the first twelve projects in two rows) with the Google Chrome installed on this computer, so it does not run during deploy. A project without its image falls back to `og-image.png`.
 5. If search engines should read it as something other than an educational app, set `schema` (for example `{ category: 'LifestyleApplication' }`, or `{ type: 'Blog' }`).
+6. If the name and first paragraph don't say what people search for, set `search` with a title (under 60 characters) and a description (under 155). Set `schema.free` for a free download and `schema.publisher` when someone else releases it.
 
 Only write what the project's own repo, docs or public site says. Do not link to private repos.
 
@@ -65,6 +66,8 @@ A project's `docs` (privacy policy, terms, support, samples) become pages at `/<
 
 ### Project Pages
 `vite.config.ts` writes `dist/<slug>/index.html` and `dist/sitemap.xml` at build time, so each page returns a 200 on GitHub Pages with its own title, description, canonical and language tags, preview image and structured data (WebPage with breadcrumbs, plus the project as SoftwareApplication, WebApplication, SoftwareSourceCode or Blog).
+
+The build also renders each page's body with the app's own components (`src/entry-server.tsx`), so crawlers that don't run JavaScript read the whole page. The browser then draws the same markup over it. Code that runs while a component renders (not in an effect or handler) must check that `window`, `document` and `navigator` exist.
 
 ### GitHub Release Integration
 - `scripts/fetch-releases.js` writes `public/github-releases.json` during deploy to avoid API rate limits. `useGitHubRelease` reads that file and falls back to the GitHub API.

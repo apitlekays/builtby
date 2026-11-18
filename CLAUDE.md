@@ -57,7 +57,7 @@ scripts/            # fetch-releases.js, run during deploy
 3. If it has downloads, set `download` and add the repo to `scripts/fetch-releases.js`.
 4. Run `npm run share-images` and commit the new `public/og/<slug>.png`. It draws the 1200x630 link preview for the project (and redraws `public/og-image.png`, whose icon panel shows the first twelve projects in two rows) with the Google Chrome installed on this computer, so it does not run during deploy. A project without its image falls back to `og-image.png`.
 5. If search engines should read it as something other than an educational app, set `schema` (for example `{ category: 'LifestyleApplication' }`, or `{ type: 'Blog' }`).
-6. If the name and first paragraph don't say what people search for, set `search` with a title (under 60 characters) and a description (under 155). Set `schema.free` for a free download and `schema.publisher` when someone else releases it.
+6. If the name and first paragraph don't say what people search for, set `search` with a title (under 60 characters) and a description (under 155). Set `schema.free` for a free download and `schema.publisher` when someone else releases it. An `apps.apple.com` link in `actions` also becomes the app's `downloadUrl` and Safari's App Store banner on its page.
 
 Only write what the project's own repo, docs or public site says. Do not link to private repos.
 

@@ -50,6 +50,10 @@ const person = {
   ],
 }
 
+// A project's App Store page, taken from its actions, so adding the link there is enough.
+const appStoreUrl = (project: Project) => project.actions.find((action) => action.href.startsWith('https://apps.apple.com/'))?.href
+const appStoreId = (project: Project) => appStoreUrl(project)?.match(/\/id(\d+)/)?.[1]
+
 // What a search engine should know about one project, from its entry in projects.ts.
 function projectEntity(project: Project) {
   const base = {
@@ -83,7 +87,7 @@ function projectEntity(project: Project) {
     screenshot: project.screens?.map((screen) => `${siteUrl}${encodeURI(screen.src)}`),
     downloadUrl: project.download
       ? `https://github.com/${project.download.owner}/${project.download.repo}/releases/latest`
-      : undefined,
+      : appStoreUrl(project),
   }
 }
 
@@ -176,6 +180,8 @@ interface PageMeta {
   structuredData: string
   // The page as React renders it, so crawlers that don't run JavaScript still read its text.
   body: string
+  // Shows Safari's banner for the app on iPhone and iPad.
+  appStoreId?: string
 }
 
 // Writes one page's own address, words and preview image into every tag that names them.
@@ -206,6 +212,8 @@ function pageHtml(template: string, page: PageMeta) {
     setContent('name="twitter:image:alt"', safe.imageAlt),
     (html: string) => html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, () => page.structuredData),
     (html: string) => html.replace('<div id="root"></div>', () => `<div id="root">${page.body}</div>`),
+    (html: string) =>
+      page.appStoreId ? html.replace('</head>', () => `  <meta name="apple-itunes-app" content="app-id=${page.appStoreId}" />\n  </head>`) : html,
   ]
   return edits.reduce((html, edit) => edit(html), template)
 }
@@ -257,6 +265,7 @@ function projectPages(): Plugin {
             imageAlt: `${project.name}: ${project.tagline}`,
             structuredData: projectData(project),
             body: render(`/${project.slug}`),
+            appStoreId: appStoreId(project),
           }),
         )
       }

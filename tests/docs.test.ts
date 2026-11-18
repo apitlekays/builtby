@@ -81,3 +81,9 @@ test('SuluhDiff search title and description fit in search results', () => {
   assert.ok(suluhdiff.search.title.length <= 60, 'title over 60 characters');
   assert.ok(suluhdiff.search.description.length <= 155, 'description over 155 characters');
 });
+
+test('the SuluhDiff page links its App Store app for search engines and Safari', { skip: !existsSync('dist/index.html') && 'run npm run build first' }, () => {
+  const html = readFileSync(join('dist', 'suluhdiff', 'index.html'), 'utf8');
+  assert.ok(html.includes('<meta name="apple-itunes-app" content="app-id=6831143497" />'), 'Smart App Banner missing');
+  assert.ok(html.includes('"downloadUrl":"https://apps.apple.com/app/suluhdiff/id6831143497"'), 'downloadUrl missing');
+});

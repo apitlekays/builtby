@@ -329,7 +329,7 @@ export const projects: Project[] = [
     icon: { src: '/icons/suluhdiff.png' },
     platforms: ['Mac', 'iPad'],
     tagline: 'The missing diff tool for writers: see every change between two drafts, and whether your feedback was taken.',
-    notice: 'SuluhDiff for iPad is on the App Store now, and the Mac version is in App Store review. Comparing drafts is free; one purchase unlocks the rest.',
+    notice: 'SuluhDiff is on the App Store now for Mac and iPad. Comparing drafts is free; one purchase unlocks the rest on both.',
     about: [
       'SuluhDiff puts two drafts of a thesis, article or novel side by side and shows every word that was added, cut, rewritten or moved, joined by ribbons so you can follow each paragraph from one draft to the next.',
       'Programmers have always been able to see exactly what changed between two versions of their work. Writers have had to read both drafts and hope they spot the differences. SuluhDiff is for supervisors and lecturers checking a student’s revised chapter, students and researchers revising their own work, and novelists and professional writers reviewing an editor’s pass.',

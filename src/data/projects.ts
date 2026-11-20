@@ -846,7 +846,7 @@ export const projects: Project[] = [
           {
             heading: 'Reporting a problem',
             blocks: [
-              'Send what you found to the person who invited you to the beta. A short message with a screenshot is enough.',
+              'Send what you found to [hello@hackedu.tech](mailto:hello@hackedu.tech). A short message with a screenshot is enough.',
               {
                 kind: 'bullets',
                 items: [

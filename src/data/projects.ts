@@ -699,12 +699,12 @@ export const projects: Project[] = [
     icon: { src: '/icons/suluhalms.png' },
     platforms: ['macOS'],
     tagline: 'A study companion that turns a PDF, Word file, web page or YouTube lecture into a self-paced mastery course.',
-    notice: 'SuluhALMS is in a pilot at UPSI and still in active development. Builds for Apple silicon Macs are public.',
+    notice: 'SuluhALMS is in public beta, with a pilot at UPSI, and still in active development. Builds for Apple silicon Macs are public; testers can read the beta tester guide under Details.',
     about: [
       'SuluhALMS is a study companion for anyone learning something in a structured way: a student working through a textbook, a teacher taking on a new topic, or anyone who wants to really understand a long lecture. Give it your material and it builds a self-paced course with objectives, units, narrated unit videos, questions and spaced review, then takes you through it one step at a time.',
       'Behind it is a team of AI agents led by an Orchestrator. A Source Analyst reads your material, a Curriculum Architect plans the units, an Instructional Designer writes the lessons, an Assessment Designer writes the questions and a Media Producer makes the videos. A Quality Auditor checks their work against the source before you see it. While you learn, a Learning Analyst reads your wrong answers and a Tutor answers your questions. The agent log shows which agent did what, and whether a rule or the AI model made each decision.',
       'A unit opens once the one before is mastered at 80 percent, and every explanation and question cites the page or section it came from.',
-      'Answers and progress stay on the Mac, and there is no account. Only the course text goes to the AI provider you choose (and the narration to HeyGen, if you add a HeyGen key). With Ollama, nothing leaves the Mac at all.',
+      'Answers and progress stay on the Mac, and there is no account. Only the course text goes to Claude, with your own key, and the narration goes to HeyGen if you add a HeyGen key.',
     ],
     features: [
       {
@@ -750,10 +750,10 @@ export const projects: Project[] = [
     ],
     facts: [
       { label: 'Runs on', value: 'macOS 14 or later, Apple silicon' },
-      { label: 'AI provider', value: 'Your own Claude or OpenAI key, or Ollama running on the Mac. With Claude, the agents choose Sonnet or Haiku for each job.' },
-      { label: 'Narration', value: 'With a HeyGen key, Bahasa Malaysia in the voice cloned on your HeyGen account and English in a native English voice; otherwise a macOS voice' },
+      { label: 'AI provider', value: 'Your own Claude key; the agents choose Sonnet or Haiku for each job. OpenAI and Ollama will come back in a later update.' },
+      { label: 'Narration', value: 'With a HeyGen key, Bahasa Malaysia in your own voice recorded in the app or in the SuluhALMS voice, and English in a native English voice; otherwise a macOS voice' },
       { label: 'Languages', value: 'English and Bahasa Malaysia' },
-      { label: 'Stage', value: 'Pilot at UPSI' },
+      { label: 'Stage', value: 'Public beta, and a pilot at UPSI' },
     ],
     actions: [{ label: 'All releases', href: 'https://github.com/apitlekays/alms-releases/releases' }],
     download: { owner: 'apitlekays', repo: 'alms-releases' },
@@ -770,9 +770,9 @@ export const projects: Project[] = [
       {
         slug: 'beta',
         title: 'Beta tester guide',
-        description: 'How to install and test the SuluhALMS 0.1.37 beta on an Apple silicon Mac: what you need, what to try, what leaves your Mac, and how to report a problem.',
+        description: 'How to install and test the SuluhALMS beta on an Apple silicon Mac: what you need, what to try, what leaves your Mac, and how to report a problem.',
         dated: 'Updated 20 November 2026',
-        intro: 'Thank you for testing SuluhALMS 0.1.37. It turns a PDF, document, web page or YouTube video into a course with lessons, videos, practice and a Tutor, built by AI agents on your Mac. This is an early test build, so expect rough edges and tell us about them.',
+        intro: 'Thank you for testing the SuluhALMS beta. It turns a PDF, document, web page or YouTube video into a course with lessons, videos, practice and a Tutor, built by AI agents on your Mac. This is an early test build, so expect rough edges and tell us about them.',
         sections: [
           {
             heading: 'Before you start',
@@ -797,7 +797,7 @@ export const projects: Project[] = [
               {
                 kind: 'bullets',
                 items: [
-                  'Download [SuluhALMS_0.1.37_aarch64.dmg](https://github.com/apitlekays/alms-releases/releases/download/test-0.1.37/SuluhALMS_0.1.37_aarch64.dmg) (200 MB). No GitHub account is needed.',
+                  'Download the .dmg file of the [latest release](https://github.com/apitlekays/alms-releases/releases/latest) (about 200 MB). No GitHub account is needed.',
                   'Open the downloaded file and drag SuluhALMS into the Applications folder.',
                   'Open SuluhALMS from Applications. The app is signed and checked by Apple, so macOS opens it without warnings.',
                   'Follow the welcome: three short slides, connecting Claude, then choosing a voice.',

@@ -766,6 +766,102 @@ export const projects: Project[] = [
       { src: '/screens/suluhalms-6-analytics.jpg', caption: 'Analytics: mastery for every objective against the 80 percent line.' },
       { src: '/screens/suluhalms-7-task-ms.jpg', caption: 'A Bahasa Malaysia course in the English interface: the unit’s task comes first.' },
     ],
+    docs: [
+      {
+        slug: 'beta',
+        title: 'Beta tester guide',
+        description: 'How to install and test the SuluhALMS 0.1.37 beta on an Apple silicon Mac: what you need, what to try, what leaves your Mac, and how to report a problem.',
+        dated: 'Updated 20 November 2026',
+        intro: 'Thank you for testing SuluhALMS 0.1.37. It turns a PDF, document, web page or YouTube video into a course with lessons, videos, practice and a Tutor, built by AI agents on your Mac. This is an early test build, so expect rough edges and tell us about them.',
+        sections: [
+          {
+            heading: 'Before you start',
+            blocks: [
+              'You need a Mac with an Apple chip and your own Claude API key. A HeyGen key is optional.',
+              {
+                kind: 'bullets',
+                items: [
+                  'A Mac with an Apple chip (M1 or newer). Intel Macs are not supported.',
+                  'macOS 14 Sonoma or later. Check in Apple menu, About This Mac.',
+                  'A Claude API key, from [console.anthropic.com](https://console.anthropic.com). The app shows you how to get one, step by step. Building a course costs about RM 0.35 to RM 0.50 per unit, billed by Anthropic to your account.',
+                  'A HeyGen API key, if you want it. It gives videos a natural voice instead of your Mac’s robotic one, billed by HeyGen to your account.',
+                  'At least 2 GB of free space. The app takes about 450 MB once installed, the video renderer downloads about 200 MB before your first video, and unit videos add more as you build courses.',
+                ],
+              },
+              'If you were only given a course file to open, you can do that without a Claude key.',
+            ],
+          },
+          {
+            heading: 'Install',
+            blocks: [
+              {
+                kind: 'bullets',
+                items: [
+                  'Download [SuluhALMS_0.1.37_aarch64.dmg](https://github.com/apitlekays/alms-releases/releases/download/test-0.1.37/SuluhALMS_0.1.37_aarch64.dmg) (200 MB). No GitHub account is needed.',
+                  'Open the downloaded file and drag SuluhALMS into the Applications folder.',
+                  'Open SuluhALMS from Applications. The app is signed and checked by Apple, so macOS opens it without warnings.',
+                  'Follow the welcome: three short slides, connecting Claude, then choosing a voice.',
+                ],
+              },
+              'Later versions arrive by themselves: a bar at the bottom of the window says when an update is ready.',
+            ],
+          },
+          {
+            heading: 'What to try',
+            blocks: [
+              'Work through these in order and note anything that is unclear, slow or broken. Start with a short source (a few pages or a 10 minute video) to keep your Claude costs low.',
+              {
+                kind: 'bullets',
+                items: [
+                  'The welcome. Did the slides and the Claude key steps make sense? Did you get stuck anywhere?',
+                  'Choosing a voice. Try at least one: your Mac’s voice (free), recording your own voice, or the SuluhALMS voice (both need a HeyGen key).',
+                  'Recording your own voice. Allow the microphone when macOS asks, read the passage aloud, watch the level meter, listen back, and record again once.',
+                  'A first course. Build one from a PDF, a document, a web page or a YouTube link. Note roughly how long it took.',
+                  'A unit from start to finish: your task, the video, reading, practice and the unit test.',
+                  'The Tutor. Ask it something about the unit. Press ⌘J to open or fold it.',
+                  'Both languages. If you can, try a course in Bahasa Malaysia and one in English.',
+                ],
+              },
+              'If a video says your Mac is missing its Malay or English voice, follow the steps it shows to install it.',
+            ],
+          },
+          {
+            heading: 'Privacy',
+            blocks: [
+              'SuluhALMS has no account and sends nothing to us. It talks only to the services you connect, using your own keys.',
+              {
+                kind: 'bullets',
+                items: [
+                  'Anthropic (Claude) receives the text and page images of your source when you build a course, and your questions when you ask the Tutor.',
+                  'HeyGen receives the narration text of each video, only if you add a HeyGen key.',
+                  'HeyGen receives your voice recording only if you record your own voice, to make it in your HeyGen account.',
+                  'YouTube or the web page you link to is downloaded normally when you build a course from a link.',
+                  'GitHub is checked for updates when the app starts, and supplies the SuluhALMS voice sample if you choose it.',
+                  'Before your first video, the app downloads a headless Chrome to draw videos with, once you agree.',
+                ],
+              },
+              'Your courses, answers, progress and videos stay on your Mac. Videos are drawn on your Mac, not online. Your keys are kept in the macOS Keychain. Don’t use confidential material for this test.',
+            ],
+          },
+          {
+            heading: 'Reporting a problem',
+            blocks: [
+              'Send what you found to the person who invited you to the beta. A short message with a screenshot is enough.',
+              {
+                kind: 'bullets',
+                items: [
+                  'What you were doing, and what you expected to happen.',
+                  'What happened instead, with a screenshot (press ⇧⌘4 to capture part of the screen).',
+                  'The version, shown in SuluhALMS under Settings, About.',
+                  'Your Mac’s chip and macOS version, from Apple menu, About This Mac.',
+                ],
+              },
+              'Never send your Claude or HeyGen key to anyone, including us.',
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     slug: 'spectre-ui',

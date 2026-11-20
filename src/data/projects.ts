@@ -650,6 +650,233 @@ export const projects: Project[] = [
     screens: [{ src: '/screens/hackedu.jpg', caption: 'The Hack(edu).tech home page.' }],
   },
   {
+    slug: 'astakademia',
+    schema: { category: 'ProductivityApplication', publisher: 'HackEduTech Labs' },
+    search: {
+      title: 'Astakademia: a lecturer’s workload on Mac and iPad | builtby.',
+      description:
+        'One place for a Malaysian lecturer’s workload on Mac and iPad: semesters, courses, the weekly timetable, ISO teaching files and tasks, in Bahasa Malaysia.',
+    },
+    name: 'Astakademia',
+    kind: 'app',
+    audience: 'researchers',
+    status: 'closed-beta',
+    icon: { src: '/icons/astakademia.png' },
+    platforms: ['Mac', 'iPad'],
+    tagline: 'One place for a lecturer’s whole workload, opened every morning on the Mac and carried on the iPad.',
+    notice: 'Astakademia is in closed beta testing. New accounts are not open yet.',
+    about: [
+      'Astakademia gathers the work of a Malaysian university lecturer in one app, organised by the pillars lecturers are assessed on: Pengajaran (teaching), Penyeliaan (supervision), Penyelidikan (research), Penerbitan (publication), Perundingan (consultancy), Pengkomersialan (commercialisation) and Perkhidmatan (service).',
+      'Teaching comes first. The other pillars are on the way, and tasks from every pillar already live in one list.',
+    ],
+    features: [
+      {
+        title: 'Utama, every morning',
+        detail: 'Today’s date, open and overdue tasks, this week’s classes on a timeline, and what needs action.',
+      },
+      {
+        title: 'Semesters and courses',
+        detail: 'Courses, groups and their weekly class slots for each semester, with clashes pointed out as you add them.',
+      },
+      {
+        title: 'Jadual',
+        detail: 'The week’s timetable for every group you teach, in one grid.',
+      },
+      {
+        title: 'Fail ISO',
+        detail: 'The teaching file checklist for each semester, course and group, with what is done and what is still open.',
+      },
+      {
+        title: 'Works offline, syncs at once',
+        detail: 'Each device keeps its own copy and works without a connection. Changes reach your other devices within seconds when they are online.',
+      },
+      {
+        title: 'Your devices, your account',
+        detail: 'Sign in on your Mac with Apple or Google. The Mac then adds your iPad with a one-time code, and can remove any device.',
+      },
+    ],
+    facts: [
+      { label: 'Runs on', value: 'macOS 26 or later, iPadOS 26 or later' },
+      { label: 'Language', value: 'Bahasa Malaysia' },
+      { label: 'Your data', value: 'On your devices, and synced through Astakademia’s server for your account only' },
+      { label: 'By', value: 'HackEduTech Labs' },
+    ],
+    actions: [],
+    docs: [
+      {
+        slug: 'privacy',
+        title: 'Privacy Policy',
+        description: 'What Astakademia stores, where, who can see it, and how to delete your account and everything in it.',
+        dated: 'Effective 20 November 2026',
+        intro: 'Astakademia keeps a lecturer’s workload: semesters, courses, timetables, teaching files and tasks. It is provided by Mohd Hafiz bin Md Hanif, trading as HackEduTech Labs, in Malaysia. This policy explains what the app stores and what happens to it.',
+        sections: [
+          {
+            heading: 'What Astakademia stores',
+            blocks: [
+              {
+                kind: 'bullets',
+                items: [
+                  'The work you enter: semesters, courses, groups, class slots, weekly plans, links to course materials, teaching records, the status of your ISO teaching file items, and tasks.',
+                  'Your account: an account number, and the Apple or Google sign-in you used. From Apple or Google, Astakademia keeps only the account identifier they give it and your email address when they say it is verified. It never sees your Apple or Google password.',
+                  'Your devices: the name of each device you add, and a key for each one. The server keeps only a scrambled form (a hash) of each key, so the key itself cannot be read back from the server.',
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'Where it is kept',
+            blocks: [
+              'Each of your devices keeps a copy of your work, so the app works without a connection. To keep your devices in step, your work is also stored on Astakademia’s server, which runs on Cloudflare. Your work travels between your devices and the server over an encrypted connection.',
+              'Your work belongs to your account. Other people using Astakademia cannot see or change it, and the server checks this on every request.',
+            ],
+          },
+          {
+            heading: 'What Astakademia does not do',
+            blocks: [
+              {
+                kind: 'bullets',
+                items: [
+                  'No advertising, no analytics and no tracking, and no third-party software in the app that does these things.',
+                  'Your work is not sold, shared or used for anything other than showing it back to you on your devices.',
+                ],
+              },
+            ],
+          },
+          {
+            heading: 'Signing in with Apple or Google',
+            blocks: [
+              'When you sign in, Apple or Google shows the sign-in screen under its own privacy policy: [Apple’s](https://www.apple.com/legal/privacy/) or [Google’s](https://policies.google.com/privacy). Astakademia asks Google only for your sign-in and email address, nothing from your Gmail, Drive or calendar.',
+            ],
+          },
+          {
+            heading: 'The camera',
+            blocks: [
+              'On the iPad, the camera is used only when you choose to scan the code your Mac shows to add the iPad. The camera picture is read on the iPad and is not stored or sent anywhere.',
+            ],
+          },
+          {
+            heading: 'Deleting your account',
+            blocks: [
+              'On a Mac signed in to your account, you can delete the account from within Astakademia. This removes your work, your devices and your sign-ins from the server at once. To remove the copy on a device, delete the app from that device.',
+            ],
+          },
+          {
+            heading: 'Student information',
+            blocks: [
+              'This version does not store student records such as names, attendance or marks. If a later version does, this policy will describe it before that version is released.',
+            ],
+          },
+          {
+            heading: 'Changes to this policy',
+            blocks: ['If this policy changes, the new version will be posted on this page with a new effective date.'],
+          },
+          {
+            heading: 'Contact',
+            blocks: ['Questions about privacy: [hello@hackedu.tech](mailto:hello@hackedu.tech).'],
+          },
+        ],
+      },
+      {
+        slug: 'terms',
+        title: 'Terms of Use',
+        description: 'The terms for using Astakademia: the beta, your account and devices, your content, and who to contact.',
+        dated: 'Effective 20 November 2026',
+        intro: 'Astakademia is provided by Mohd Hafiz bin Md Hanif, trading as HackEduTech Labs, in Malaysia (“we”). By using Astakademia you agree to these terms.',
+        sections: [
+          {
+            heading: 'A beta',
+            blocks: [
+              'Astakademia is in beta testing. Features may change or be removed, and the service may sometimes be unavailable. Keep your own copies of anything you cannot afford to lose.',
+            ],
+          },
+          {
+            heading: 'Apple’s licence',
+            blocks: [
+              'When Astakademia is installed from Apple, it is licensed to you under Apple’s [Licensed Application End User License Agreement](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/). These terms add to it. Where the two differ, Apple’s agreement applies.',
+            ],
+          },
+          {
+            heading: 'Your account and devices',
+            blocks: [
+              'Your account is the Apple or Google sign-in you chose. Keep your devices locked. If a device is lost, remove it from your Mac in Astakademia, and it can no longer reach your account.',
+            ],
+          },
+          {
+            heading: 'Your content',
+            blocks: [
+              'What you enter remains yours. You are responsible for having the right to keep the information you enter, including anything about students or colleagues, under your institution’s rules and the law.',
+            ],
+          },
+          {
+            heading: 'Using Astakademia fairly',
+            blocks: [
+              'Use Astakademia lawfully. Do not try to reach other people’s accounts, overload the service, or get around its limits.',
+            ],
+          },
+          {
+            heading: 'No warranty, and limits on liability',
+            blocks: [
+              'Astakademia is provided as is. To the extent the law allows, we are not liable for lost data or for decisions made on the basis of what the app shows.',
+              'Nothing in these terms takes away rights you have under consumer law that cannot be excluded.',
+            ],
+          },
+          {
+            heading: 'Changes and the law that applies',
+            blocks: [
+              'If these terms change, the new version will be posted on this page with a new effective date. These terms are governed by the laws of Malaysia, without limiting the consumer protections of the country where you live.',
+            ],
+          },
+          {
+            heading: 'Contact',
+            blocks: ['Write to [hello@hackedu.tech](mailto:hello@hackedu.tech). See also the [privacy policy](/astakademia/privacy).'],
+          },
+        ],
+      },
+      {
+        slug: 'support',
+        title: 'Support',
+        description: 'Help with Astakademia on Mac and iPad: signing in, adding and removing devices, working offline, deleting your account, and contact.',
+        intro: 'Help with Astakademia, the lecturer’s workload app for Mac and iPad.',
+        sections: [
+          {
+            heading: 'Contact',
+            blocks: [
+              'Write to [hello@hackedu.tech](mailto:hello@hackedu.tech). Please say whether you use a Mac or an iPad, and which version of Astakademia.',
+            ],
+          },
+          {
+            heading: 'Can I sign up?',
+            blocks: ['Not yet. Astakademia is in closed beta testing, and new accounts are not open.'],
+          },
+          {
+            heading: 'How do I add my iPad?',
+            blocks: [
+              'On your Mac, open Sambungan and choose to add a device. The Mac shows a QR code and a short code for five minutes. On the iPad, open Sambungan and scan the QR code, or type the short code. Each code works once.',
+            ],
+          },
+          {
+            heading: 'I lost a device.',
+            blocks: [
+              'On your Mac, open Sambungan, find the device in the list and remove it. It can no longer reach your account, and its live connection ends at once.',
+            ],
+          },
+          {
+            heading: 'Does it work without internet?',
+            blocks: [
+              'Yes. Each device keeps its own copy and saves your changes on the device. They reach your other devices the next time it is online.',
+            ],
+          },
+          {
+            heading: 'How do I delete my account?',
+            blocks: [
+              'On a Mac signed in to your account, open Sambungan and delete the account. Your work, devices and sign-ins are removed from the server. See the [privacy policy](/astakademia/privacy) and the [terms of use](/astakademia/terms).',
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     slug: 'suluh',
     schema: { category: 'GameApplication' },
     name: 'SULUH',
